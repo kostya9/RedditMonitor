@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Console;
 using MongoDB.Driver;
 using RedditSharp;
+using RedditSharp.Things;
 
 namespace KPI.RedditMonitor.Collector
 {
@@ -27,9 +28,14 @@ namespace KPI.RedditMonitor.Collector
 
             var builder = new LoggerFactory().AddConsole();
 
-            var log = builder.CreateLogger<RedditCollector>();
+            var log = builder.CreateLogger<Program>();
             var inserter = new PostInserter(repo, builder.CreateLogger<PostInserter>(), 100);
 
+            await Run(inserter, collector, log);
+        }
+
+        private static async Task Run(PostInserter inserter, RedditCollector collector, ILogger<Program> log)
+        {
             inserter.Start();
 
             var count = 0;
