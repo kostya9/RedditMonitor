@@ -14,7 +14,10 @@ namespace KPI.RedditMonitor.Collector
         public RedditCollector(RedditOptions options)
         {
             var webAgent = new BotWebAgent(options.Username, options.Password, options.ClientId,
-                options.ClientSecret, options.CallbackUrl);
+                options.ClientSecret, options.CallbackUrl)
+            {
+                UserAgent = options.UserAgent
+            };
             _reddit = new Reddit(webAgent);
         }
 
