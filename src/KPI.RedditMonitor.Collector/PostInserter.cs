@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using KPI.RedditMonitor.Data;
@@ -49,9 +50,12 @@ namespace KPI.RedditMonitor.Collector
                             toInsert.Add(post);
                         }
 
-                        insertTask = _repository.AddRange(toInsert);
-                        _log.LogInformation(
-                            $"[STATS]: Received {toInsert.Count} images with posts in {_delaySeconds} seconds");
+                        if (toInsert.Any())
+                        {
+                            insertTask = _repository.AddRange(toInsert);
+                            _log.LogInformation(
+                                $"[STATS]: Received {toInsert.Count} images with posts in {_delaySeconds} seconds");
+                        }
                     }
                 }
                 catch (Exception e)

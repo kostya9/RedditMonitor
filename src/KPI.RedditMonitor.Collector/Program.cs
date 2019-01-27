@@ -29,7 +29,7 @@ namespace KPI.RedditMonitor.Collector
             var builder = new LoggerFactory().AddConsole();
 
             var log = builder.CreateLogger<Program>();
-            var inserter = new PostInserter(repo, builder.CreateLogger<PostInserter>(), 100);
+            var inserter = new PostInserter(repo, builder.CreateLogger<PostInserter>(), 30);
 
             await Run(inserter, collector, log);
         }
@@ -43,7 +43,7 @@ namespace KPI.RedditMonitor.Collector
 
             await collector.SubscribeOnEntries((e) =>
             {
-                var imagePosts = ImagePostFactory.Create(e.Id, e.Text, e.Url);
+                var imagePosts = ImagePostFactory.Create(e.Id, e.Text, e.Url, e.CreatedAt);
 
                 foreach (var imagePost in imagePosts)
                 {

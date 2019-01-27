@@ -23,12 +23,12 @@ namespace KPI.RedditMonitor.Collector
         public Task SubscribeOnEntries(Action<RedditPost> callback, CancellationToken token = default)
         {
             var comments = _reddit.RSlashAll.GetComments(limitPerRequest: 100).Stream();
-            var posts = _reddit.RSlashAll.GetPosts().Stream();
+            var posts = _reddit.RSlashAll.GetPosts(Subreddit.Sort.New).Stream();
 
             comments.ForEachAsync((t) => 
-                callback(new RedditPost(t.Id, t.Body, t.Permalink.ToString())), token);
+                callback(new RedditPost(t.Id, t.Body, t.Permalink.ToString(), t.CreatedUTC)), token);
             posts.ForEachAsync((t) => 
-                callback(new RedditPost(t.Id, t.Title + " " + t.SelfText + " " + t.Url.AbsoluteUri, t.Permalink.ToString())), token);
+                callback(new RedditPost(t.Id, t.Title + " " + t.SelfText + " " + t.Url.AbsoluteUri, t.Permalink.ToString(), t.CreatedUTC)), token);
 
             return Task.WhenAll(comments.Enumerate(token), posts.Enumerate(token));
         }
@@ -36,17 +36,20 @@ namespace KPI.RedditMonitor.Collector
 
     public class RedditPost
     {
-        public RedditPost(string id, string text, string url)
+        public RedditPost(string id, string text, string url, DateTime createdAt)
         {
             Id = id;
             Text = text;
             Url = url;
+            CreatedAt = createdAt;
         }
 
         public string Id { get; }
 
         public string Text { get; }
 
-        public string Url { get; set; }
+        public string Url { get; }
+
+        public DateTime CreatedAt { get; }
     }
 }

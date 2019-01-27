@@ -12,7 +12,7 @@ namespace KPI.RedditMonitor.Collector
 
         private static Regex imageRegexp = new Regex(imageRegexpMatch, RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-        public static IEnumerable<ImagePost> Create(string id, string text, string url)
+        public static IEnumerable<ImagePost> Create(string id, string text, string url, DateTime createdAt)
         {
             var parsed = imageRegexp.Match(text);
             while (parsed.Success)
@@ -20,7 +20,7 @@ namespace KPI.RedditMonitor.Collector
                 yield return new ImagePost
                 {
                     Id = Guid.NewGuid().ToString("D"),
-                    CreatedAt = DateTime.UtcNow,
+                    CreatedAt = createdAt,
                     RedditId = id,
                     Text = text,
                     ImageUrl = parsed.Value,
