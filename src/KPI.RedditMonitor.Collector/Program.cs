@@ -40,7 +40,7 @@ namespace KPI.RedditMonitor.Collector
 
             await collector.SubscribeOnEntries((e) =>
             {
-                var imagePosts = ImagePostFactory.Create(e.Id, e.Text, e.Url, e.CreatedAt, e.Nsfw);
+                var imagePosts = ImagePostFactory.Create(e.Id, e.Text, e.Url, e.CreatedAt, e.Ignore);
 
                 foreach (var imagePost in imagePosts)
                 {

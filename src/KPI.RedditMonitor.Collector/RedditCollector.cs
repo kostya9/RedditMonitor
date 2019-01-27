@@ -24,7 +24,7 @@ namespace KPI.RedditMonitor.Collector
             var posts = _reddit.RSlashAll.GetPosts(Subreddit.Sort.New).Stream();
 
             comments.ForEachAsync((t) => 
-                callback(new RedditPost(t.Id, t.Body, t.Permalink.ToString(), t.CreatedUTC, false)), token);
+                callback(new RedditPost(t.Id, t.Body, t.Permalink.ToString(), t.CreatedUTC, t.IsStickied)), token);
             posts.ForEachAsync((t) => 
                 callback(new RedditPost(t.Id, t.Title + " " + t.SelfText + " " + t.Url.AbsoluteUri, t.Permalink.ToString(), t.CreatedUTC, t.NSFW)), token);
 
@@ -34,13 +34,13 @@ namespace KPI.RedditMonitor.Collector
 
     public class RedditPost
     {
-        public RedditPost(string id, string text, string url, DateTime createdAt, bool nsfw)
+        public RedditPost(string id, string text, string url, DateTime createdAt, bool ignore)
         {
             Id = id;
             Text = text;
             Url = url;
             CreatedAt = createdAt;
-            Nsfw = nsfw;
+            Ignore = ignore;
         }
 
         public string Id { get; }
@@ -50,6 +50,7 @@ namespace KPI.RedditMonitor.Collector
         public string Url { get; }
 
         public DateTime CreatedAt { get; }
-        public bool Nsfw { get; }
+
+        public bool Ignore { get; }
     }
 }
