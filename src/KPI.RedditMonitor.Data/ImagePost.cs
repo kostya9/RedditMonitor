@@ -15,5 +15,9 @@ namespace KPI.RedditMonitor.Data
         public string Text { get; set; }
 
         public DateTime CreatedAt { get; set; }
+
+        public bool Ignore { get; set; }
+
+        public bool Nsfw { get; set; }
     }
 }

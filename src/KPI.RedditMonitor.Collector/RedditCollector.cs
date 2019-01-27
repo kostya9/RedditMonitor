@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Reactive.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using RedditSharp;
@@ -26,9 +24,9 @@ namespace KPI.RedditMonitor.Collector
             var posts = _reddit.RSlashAll.GetPosts(Subreddit.Sort.New).Stream();
 
             comments.ForEachAsync((t) => 
-                callback(new RedditPost(t.Id, t.Body, t.Permalink.ToString(), t.CreatedUTC)), token);
+                callback(new RedditPost(t.Id, t.Body, t.Permalink.ToString(), t.CreatedUTC, false)), token);
             posts.ForEachAsync((t) => 
-                callback(new RedditPost(t.Id, t.Title + " " + t.SelfText + " " + t.Url.AbsoluteUri, t.Permalink.ToString(), t.CreatedUTC)), token);
+                callback(new RedditPost(t.Id, t.Title + " " + t.SelfText + " " + t.Url.AbsoluteUri, t.Permalink.ToString(), t.CreatedUTC, t.NSFW)), token);
 
             return Task.WhenAll(comments.Enumerate(token), posts.Enumerate(token));
         }
@@ -36,12 +34,13 @@ namespace KPI.RedditMonitor.Collector
 
     public class RedditPost
     {
-        public RedditPost(string id, string text, string url, DateTime createdAt)
+        public RedditPost(string id, string text, string url, DateTime createdAt, bool nsfw)
         {
             Id = id;
             Text = text;
             Url = url;
             CreatedAt = createdAt;
+            Nsfw = nsfw;
         }
 
         public string Id { get; }
@@ -51,5 +50,6 @@ namespace KPI.RedditMonitor.Collector
         public string Url { get; }
 
         public DateTime CreatedAt { get; }
+        public bool Nsfw { get; }
     }
 }

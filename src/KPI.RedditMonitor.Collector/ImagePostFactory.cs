@@ -12,7 +12,7 @@ namespace KPI.RedditMonitor.Collector
 
         private static Regex imageRegexp = new Regex(imageRegexpMatch, RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-        public static IEnumerable<ImagePost> Create(string id, string text, string url, DateTime createdAt)
+        public static IEnumerable<ImagePost> Create(string id, string text, string url, DateTime createdAt, bool nsfw)
         {
             var parsed = imageRegexp.Match(text);
             while (parsed.Success)
@@ -24,7 +24,9 @@ namespace KPI.RedditMonitor.Collector
                     RedditId = id,
                     Text = text,
                     ImageUrl = parsed.Value,
-                    Url = url
+                    Url = url,
+                    Ignore = nsfw,
+                    Nsfw = nsfw
                 };
 
                 parsed = parsed.NextMatch();

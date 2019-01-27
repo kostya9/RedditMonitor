@@ -3,10 +3,7 @@ using System.Threading.Tasks;
 using KPI.RedditMonitor.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Console;
 using MongoDB.Driver;
-using RedditSharp;
-using RedditSharp.Things;
 
 namespace KPI.RedditMonitor.Collector
 {
@@ -43,7 +40,7 @@ namespace KPI.RedditMonitor.Collector
 
             await collector.SubscribeOnEntries((e) =>
             {
-                var imagePosts = ImagePostFactory.Create(e.Id, e.Text, e.Url, e.CreatedAt);
+                var imagePosts = ImagePostFactory.Create(e.Id, e.Text, e.Url, e.CreatedAt, e.Nsfw);
 
                 foreach (var imagePost in imagePosts)
                 {
