@@ -36,7 +36,7 @@ namespace KPI.RedditMonitor.Collector
                 var posts = reddit.RSlashAll.GetPosts(Subreddit.Sort.New).Stream();
 
                 comments.ForEachAsync((t) =>
-                    callback(new RedditPost(t.Id, t.Body, t.Permalink.ToString(), t.CreatedUTC, t.IsStickied || t.User.IsModerator)));
+                    callback(new RedditPost(t.Id, t.Body, t.Permalink.ToString(), t.CreatedUTC, t.IsStickied)));
                 posts.ForEachAsync((t) =>
                     callback(new RedditPost(t.Id, t.Title + " " + t.SelfText + " " + t.Url.AbsoluteUri, t.Permalink.ToString(), t.CreatedUTC, t.NSFW)));
 
