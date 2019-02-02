@@ -2,21 +2,19 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using KPI.RedditMonitor.Data;
 using Microsoft.Extensions.Logging;
 
-namespace KPI.RedditMonitor.Collector
+namespace KPI.RedditMonitor.Collector.RedditPull
 {
     public class PostInserter
     {
-        private readonly ImagePostsRepository _repository;
-        private readonly ILogger<PostInserter> _log;
         private readonly int _delaySeconds;
+        private readonly ILogger<PostInserter> _log;
         private readonly ConcurrentQueue<ImagePost> _posts;
-
-        private bool _running;
+        private readonly ImagePostsRepository _repository;
 
         public PostInserter(ImagePostsRepository repository, ILogger<PostInserter> log, int delaySeconds)
         {
@@ -31,44 +29,42 @@ namespace KPI.RedditMonitor.Collector
             _posts.Enqueue(post);
         }
 
-        public void Start()
+        public Task Run(CancellationToken cancellationToken)
         {
-            _running = true;
-            Task.Run(async () =>
+            return Task.Run(async () =>
             {
                 var insertTask = Task.CompletedTask;
-                while (_running)
+                while (!cancellationToken.IsCancellationRequested)
                 {
-                    await Task.Delay(TimeSpan.FromSeconds(_delaySeconds));
                     try
                     {
-                        await insertTask;
-
-                        var toInsert = new List<ImagePost>();
-                        while (_posts.TryDequeue(out var post))
+                        await Task.Delay(TimeSpan.FromSeconds(_delaySeconds), cancellationToken);
+                        try
                         {
-                            toInsert.Add(post);
+                            await insertTask;
+
+                            var toInsert = new List<ImagePost>();
+                            while (_posts.TryDequeue(out var post)) toInsert.Add(post);
+
+                            if (toInsert.Any())
+                            {
+                                insertTask = _repository.AddRange(toInsert);
+                                _log.LogInformation(
+                                    $"[STATS]: Received {toInsert.Count} images with posts in {_delaySeconds} seconds");
+                            }
                         }
-
-                        if (toInsert.Any())
+                        catch (Exception e)
                         {
-                            insertTask = _repository.AddRange(toInsert);
-                            _log.LogInformation(
-                                $"[STATS]: Received {toInsert.Count} images with posts in {_delaySeconds} seconds");
+                            _log.LogError(e, "An error occurred during post inserting");
+                            throw;
                         }
                     }
-                    catch (Exception e)
+                    catch (OperationCanceledException)
                     {
-                        _log.LogError(e, "An error occurred during post inserting");
-                        throw;
+                        _log.LogInformation("Inserter task was cancelled");
                     }
                 }
             });
-        }
-
-        public void Stop()
-        {
-            _running = false;
         }
     }
 }

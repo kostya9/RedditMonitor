@@ -7,7 +7,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{E9388107-731
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KPI.RedditMonitor.Collector", "src\KPI.RedditMonitor.Collector\KPI.RedditMonitor.Collector.csproj", "{6D6F0381-A659-438B-8D01-95CBAEAD7AF0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KPI.RedditMonitor.Data", "src\KPI.RedditMonitor.Data\KPI.RedditMonitor.Data.csproj", "{7810904A-CF4E-4B4A-9840-74FF765F5996}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KPI.RedditMonitor.Data", "src\KPI.RedditMonitor.Data\KPI.RedditMonitor.Data.csproj", "{7810904A-CF4E-4B4A-9840-74FF765F5996}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{337C0533-97B6-4B18-AB3B-29191F6C243D}"
 	ProjectSection(SolutionItems) = preProject
@@ -15,6 +15,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KPI.RedditMonitor.Api", "src\KPI.RedditMonitor.Api\KPI.RedditMonitor.Api.csproj", "{4863D218-E8E4-429B-B829-13109E0D2B29}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KPI.RedditMonitor.ImageProcessing", "src\KPI.RedditMonitor.ImageProcessing\KPI.RedditMonitor.ImageProcessing.csproj", "{A2293354-1EC4-4033-AA0D-13D2DD886BCE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -62,6 +64,18 @@ Global
 		{4863D218-E8E4-429B-B829-13109E0D2B29}.Release|x64.Build.0 = Release|Any CPU
 		{4863D218-E8E4-429B-B829-13109E0D2B29}.Release|x86.ActiveCfg = Release|Any CPU
 		{4863D218-E8E4-429B-B829-13109E0D2B29}.Release|x86.Build.0 = Release|Any CPU
+		{A2293354-1EC4-4033-AA0D-13D2DD886BCE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A2293354-1EC4-4033-AA0D-13D2DD886BCE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A2293354-1EC4-4033-AA0D-13D2DD886BCE}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{A2293354-1EC4-4033-AA0D-13D2DD886BCE}.Debug|x64.Build.0 = Debug|Any CPU
+		{A2293354-1EC4-4033-AA0D-13D2DD886BCE}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A2293354-1EC4-4033-AA0D-13D2DD886BCE}.Debug|x86.Build.0 = Debug|Any CPU
+		{A2293354-1EC4-4033-AA0D-13D2DD886BCE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A2293354-1EC4-4033-AA0D-13D2DD886BCE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A2293354-1EC4-4033-AA0D-13D2DD886BCE}.Release|x64.ActiveCfg = Release|Any CPU
+		{A2293354-1EC4-4033-AA0D-13D2DD886BCE}.Release|x64.Build.0 = Release|Any CPU
+		{A2293354-1EC4-4033-AA0D-13D2DD886BCE}.Release|x86.ActiveCfg = Release|Any CPU
+		{A2293354-1EC4-4033-AA0D-13D2DD886BCE}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -70,6 +84,7 @@ Global
 		{6D6F0381-A659-438B-8D01-95CBAEAD7AF0} = {E9388107-731D-400D-8BB5-5111BBCCAB95}
 		{7810904A-CF4E-4B4A-9840-74FF765F5996} = {E9388107-731D-400D-8BB5-5111BBCCAB95}
 		{4863D218-E8E4-429B-B829-13109E0D2B29} = {E9388107-731D-400D-8BB5-5111BBCCAB95}
+		{A2293354-1EC4-4033-AA0D-13D2DD886BCE} = {E9388107-731D-400D-8BB5-5111BBCCAB95}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8B1456C6-63BB-44F9-9CF5-4EC60E81507E}

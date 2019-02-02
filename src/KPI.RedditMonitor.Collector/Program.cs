@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading.Tasks;
 using KPI.RedditMonitor.Collector.RedditPull;
 using KPI.RedditMonitor.Data;
 using Microsoft.Extensions.Configuration;

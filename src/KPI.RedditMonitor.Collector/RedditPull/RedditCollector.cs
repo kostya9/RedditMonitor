@@ -7,12 +7,12 @@ using Microsoft.Extensions.Options;
 using RedditSharp;
 using RedditSharp.Things;
 
-namespace KPI.RedditMonitor.Collector
+namespace KPI.RedditMonitor.Collector.RedditPull
 {
     public class RedditCollector
     {
-        private readonly RedditOptions _options;
         private readonly ILogger<RedditCollector> _log;
+        private readonly RedditOptions _options;
 
         public RedditCollector(IOptions<RedditOptions> options, ILogger<RedditCollector> log)
         {
@@ -38,11 +38,12 @@ namespace KPI.RedditMonitor.Collector
                 var comments = reddit.RSlashAll.GetComments(limitPerRequest: 100).Stream();
                 var posts = reddit.RSlashAll.GetPosts(Subreddit.Sort.New).Stream();
 
-                comments.ForEachAsync((t) =>
+                comments.ForEachAsync(t =>
                     callback(new RedditPost(t.Id, t.Body, t.Permalink.ToString(), t.CreatedUTC,
                         t.IsStickied || t.Distinguished != ModeratableThing.DistinguishType.None)), source.Token);
-                posts.ForEachAsync((t) =>
-                    callback(new RedditPost(t.Id, t.Title + " " + t.SelfText + " " + t.Url.AbsoluteUri, t.Permalink.ToString(), t.CreatedUTC, t.NSFW)), source.Token);
+                posts.ForEachAsync(t =>
+                    callback(new RedditPost(t.Id, t.Title + " " + t.SelfText + " " + t.Url.AbsoluteUri,
+                        t.Permalink.ToString(), t.CreatedUTC, t.NSFW)), source.Token);
 
                 try
                 {
@@ -50,7 +51,7 @@ namespace KPI.RedditMonitor.Collector
                 }
                 catch (OperationCanceledException)
                 {
-                    if(!cancellationToken.IsCancellationRequested)
+                    if (!cancellationToken.IsCancellationRequested)
                         _log.LogInformation("Reconnecting to reddit...");
                 }
             }

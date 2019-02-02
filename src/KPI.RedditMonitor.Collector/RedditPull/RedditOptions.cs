@@ -1,4 +1,4 @@
-﻿namespace KPI.RedditMonitor.Collector
+﻿namespace KPI.RedditMonitor.Collector.RedditPull
 {
     public class RedditOptions
     {

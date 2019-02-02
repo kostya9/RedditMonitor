@@ -8,11 +8,12 @@ namespace KPI.RedditMonitor.Collector.RedditPull
 {
     public class RedditCollectorService : BackgroundService
     {
-        private readonly PostInserter _inserter;
         private readonly RedditCollector _collector;
+        private readonly PostInserter _inserter;
         private readonly ILogger<RedditCollectorService> _log;
 
-        public RedditCollectorService(PostInserter inserter, RedditCollector collector, ILogger<RedditCollectorService> log)
+        public RedditCollectorService(PostInserter inserter, RedditCollector collector,
+            ILogger<RedditCollectorService> log)
         {
             _inserter = inserter;
             _collector = collector;
@@ -23,19 +24,16 @@ namespace KPI.RedditMonitor.Collector.RedditPull
         {
             _log.LogInformation("Started collecting reddit entries...");
 
-            _inserter.Start();
+            var inserterTask = _inserter.Run(stoppingToken);
 
             var count = 0;
             var lastTime = DateTime.UtcNow;
 
-            await _collector.SubscribeOnEntries((e) =>
+            await _collector.SubscribeOnEntries(e =>
             {
                 var imagePosts = ImagePostFactory.Create(e.Id, e.Text, e.Url, e.CreatedAt, e.Ignore);
 
-                foreach (var imagePost in imagePosts)
-                {
-                    _inserter.Add(imagePost);
-                }
+                foreach (var imagePost in imagePosts) _inserter.Add(imagePost);
 
                 if (++count % 1000 == 0)
                 {
@@ -45,7 +43,7 @@ namespace KPI.RedditMonitor.Collector.RedditPull
                 }
             }, stoppingToken);
 
-            _inserter.Stop();
+            await inserterTask;
 
             _log.LogInformation("Stopping collecting reddit entries...");
         }
