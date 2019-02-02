@@ -2,6 +2,7 @@
 using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using RedditSharp;
 using RedditSharp.Things;
 
@@ -9,29 +10,45 @@ namespace KPI.RedditMonitor.Collector
 {
     public class RedditCollector
     {
-        private readonly Reddit _reddit;
+        private readonly RedditOptions _options;
+        private readonly ILogger<RedditCollector> _log;
 
-        public RedditCollector(RedditOptions options)
+        public RedditCollector(RedditOptions options, ILogger<RedditCollector> log)
         {
-            var webAgent = new BotWebAgent(options.Username, options.Password, options.ClientId,
-                options.ClientSecret, options.CallbackUrl)
-            {
-                UserAgent = options.UserAgent
-            };
-            _reddit = new Reddit(webAgent);
+            _options = options;
+            _log = log;
         }
 
-        public Task SubscribeOnEntries(Action<RedditPost> callback, CancellationToken token = default)
+        public async Task SubscribeOnEntries(Action<RedditPost> callback)
         {
-            var comments = _reddit.RSlashAll.GetComments(limitPerRequest: 100).Stream();
-            var posts = _reddit.RSlashAll.GetPosts(Subreddit.Sort.New).Stream();
+            while (true)
+            {
+                var source = new CancellationTokenSource(TimeSpan.FromHours(1));
 
-            comments.ForEachAsync((t) => 
-                callback(new RedditPost(t.Id, t.Body, t.Permalink.ToString(), t.CreatedUTC, t.IsStickied)), token);
-            posts.ForEachAsync((t) => 
-                callback(new RedditPost(t.Id, t.Title + " " + t.SelfText + " " + t.Url.AbsoluteUri, t.Permalink.ToString(), t.CreatedUTC, t.NSFW)), token);
+                var webAgent = new BotWebAgent(_options.Username, _options.Password, _options.ClientId,
+                    _options.ClientSecret, _options.CallbackUrl)
+                {
+                    UserAgent = _options.UserAgent
+                };
+                var reddit = new Reddit(webAgent);
 
-            return Task.WhenAll(comments.Enumerate(token), posts.Enumerate(token));
+                var comments = reddit.RSlashAll.GetComments(limitPerRequest: 100).Stream();
+                var posts = reddit.RSlashAll.GetPosts(Subreddit.Sort.New).Stream();
+
+                comments.ForEachAsync((t) =>
+                    callback(new RedditPost(t.Id, t.Body, t.Permalink.ToString(), t.CreatedUTC, t.IsStickied || t.User.IsModerator)));
+                posts.ForEachAsync((t) =>
+                    callback(new RedditPost(t.Id, t.Title + " " + t.SelfText + " " + t.Url.AbsoluteUri, t.Permalink.ToString(), t.CreatedUTC, t.NSFW)));
+
+                try
+                {
+                    await Task.WhenAll(comments.Enumerate(source.Token), posts.Enumerate(source.Token));
+                }
+                catch (TaskCanceledException)
+                {
+                    _log.LogInformation("Reconnecting to reddit...");
+                }
+            }
         }
     }
 

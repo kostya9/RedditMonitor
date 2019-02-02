@@ -18,14 +18,14 @@ namespace KPI.RedditMonitor.Collector
                 .Build();
 
             var connectionString = config["MongoDb:ConnectionString"];
-            var repo = new ImagePostsRepository(new MongoClient(connectionString));
-
             var redditOptions = config.GetSection("Reddit").Get<RedditOptions>();
-            var collector = new RedditCollector(redditOptions);
+            var repo = new ImagePostsRepository(new MongoClient(connectionString));
 
             var builder = new LoggerFactory().AddConsole();
 
             var log = builder.CreateLogger<Program>();
+
+            var collector = new RedditCollector(redditOptions, builder.CreateLogger<RedditCollector>());
             var inserter = new PostInserter(repo, builder.CreateLogger<PostInserter>(), 30);
 
             await Run(inserter, collector, log);
