@@ -19,5 +19,10 @@ namespace KPI.RedditMonitor.Data
         {
             await _collection.InsertManyAsync(posts);
         }
+
+        public async Task Add(ImagePost imagePost)
+        {
+            await _collection.InsertOneAsync(imagePost);
+        }
     }
 }

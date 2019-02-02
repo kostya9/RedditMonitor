@@ -17,5 +17,7 @@ namespace KPI.RedditMonitor.Data
         public DateTime CreatedAt { get; set; }
 
         public bool Ignore { get; set; }
+
+        public string S3Path { get; set; }
     }
 }
