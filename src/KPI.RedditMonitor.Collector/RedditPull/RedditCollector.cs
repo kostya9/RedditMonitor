@@ -3,6 +3,7 @@ using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using RedditSharp;
 using RedditSharp.Things;
 
@@ -13,17 +14,19 @@ namespace KPI.RedditMonitor.Collector
         private readonly RedditOptions _options;
         private readonly ILogger<RedditCollector> _log;
 
-        public RedditCollector(RedditOptions options, ILogger<RedditCollector> log)
+        public RedditCollector(IOptions<RedditOptions> options, ILogger<RedditCollector> log)
         {
-            _options = options;
+            _options = options.Value;
             _log = log;
         }
 
-        public async Task SubscribeOnEntries(Action<RedditPost> callback)
+        public async Task SubscribeOnEntries(Action<RedditPost> callback, CancellationToken cancellationToken)
         {
-            while (true)
+            while (!cancellationToken.IsCancellationRequested)
             {
                 var source = new CancellationTokenSource(TimeSpan.FromHours(1));
+
+                cancellationToken.Register(() => source.Cancel());
 
                 var webAgent = new BotWebAgent(_options.Username, _options.Password, _options.ClientId,
                     _options.ClientSecret, _options.CallbackUrl)
@@ -47,7 +50,8 @@ namespace KPI.RedditMonitor.Collector
                 }
                 catch (OperationCanceledException)
                 {
-                    _log.LogInformation("Reconnecting to reddit...");
+                    if(!cancellationToken.IsCancellationRequested)
+                        _log.LogInformation("Reconnecting to reddit...");
                 }
             }
         }

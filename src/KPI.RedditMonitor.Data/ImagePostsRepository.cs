@@ -8,7 +8,7 @@ namespace KPI.RedditMonitor.Data
     {
         private readonly IMongoCollection<ImagePost> _collection;
 
-        public ImagePostsRepository(MongoClient client)
+        public ImagePostsRepository(IMongoClient client)
         {
             _collection = client
                 .GetDatabase("reddit")

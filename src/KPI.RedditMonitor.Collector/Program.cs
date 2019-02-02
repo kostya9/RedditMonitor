@@ -1,61 +1,57 @@
 ﻿using System;
 using System.Threading.Tasks;
+using KPI.RedditMonitor.Collector.RedditPull;
 using KPI.RedditMonitor.Data;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 
 namespace KPI.RedditMonitor.Collector
 {
     public class Program
     {
-        public static async Task Main(string[] args)
+        public static void Main(string[] args)
         {
-            var config = new ConfigurationBuilder()
-                .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
-                .AddJsonFile("appsettings.Development.json", optional: true)
-                .AddJsonFile("appsettings.json", optional: true)
+            var host = new HostBuilder()
+                .ConfigureAppConfiguration((builder) =>
+                {
+                    builder
+                        .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
+                        .AddJsonFile("appsettings.Development.json", optional: true)
+                        .AddJsonFile("appsettings.json", optional: true);
+                })
+                .ConfigureLogging(builder =>
+                {
+                    builder.AddConsole();
+                })
+                .ConfigureServices((context, services) =>
+                {
+                    services.Configure<MongoDbConfig>(c => context.Configuration.Bind("MongoDb", c));
+                    services.Configure<RedditOptions>(o => context.Configuration.Bind("Reddit", o));
+
+                    services.AddSingleton<IMongoClient>(p =>
+                    {
+                        var config = p.GetRequiredService<IOptions<MongoDbConfig>>();
+                        return new MongoClient(config.Value.ConnectionString);
+                    });
+
+                    services.AddSingleton<ImagePostsRepository>();
+                    services.AddSingleton<RedditCollector>();
+                    services.AddSingleton<PostInserter>(p =>
+                    {
+                        var log = p.GetRequiredService<ILogger<PostInserter>>();
+                        var repo = p.GetRequiredService<ImagePostsRepository>();
+                        return new PostInserter(repo, log, 30);
+                    });
+
+                    services.AddHostedService<RedditCollectorService>();
+                })
                 .Build();
 
-            var connectionString = config["MongoDb:ConnectionString"];
-            var redditOptions = config.GetSection("Reddit").Get<RedditOptions>();
-            var repo = new ImagePostsRepository(new MongoClient(connectionString));
-
-            var builder = new LoggerFactory().AddConsole();
-
-            var log = builder.CreateLogger<Program>();
-
-            var collector = new RedditCollector(redditOptions, builder.CreateLogger<RedditCollector>());
-            var inserter = new PostInserter(repo, builder.CreateLogger<PostInserter>(), 30);
-
-            await Run(inserter, collector, log);
-        }
-
-        private static async Task Run(PostInserter inserter, RedditCollector collector, ILogger<Program> log)
-        {
-            inserter.Start();
-
-            var count = 0;
-            var lastTime = DateTime.UtcNow;
-
-            await collector.SubscribeOnEntries((e) =>
-            {
-                var imagePosts = ImagePostFactory.Create(e.Id, e.Text, e.Url, e.CreatedAt, e.Ignore);
-
-                foreach (var imagePost in imagePosts)
-                {
-                    inserter.Add(imagePost);
-                }
-
-                if (++count % 1000 == 0)
-                {
-                    var deltaSeconds = (DateTime.UtcNow - lastTime).TotalSeconds;
-                    log.LogInformation($"Received 1000 posts in {deltaSeconds}s");
-                    lastTime = DateTime.UtcNow;
-                }
-            });
-
-            inserter.Stop();
+            host.Run();
         }
     }
 }
