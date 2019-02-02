@@ -379,4 +379,4 @@ appsettings.Development.json
 
 obj/**
 
-**/aws-lambda-tools-defaults.json
+aws-lambda-tools-defaults.json
