@@ -37,11 +37,11 @@ namespace KPI.RedditMonitor.Collector
             Task.Run(async () =>
             {
                 var insertTask = Task.CompletedTask;
-                try
+                while (_running)
                 {
-                    while (_running)
+                    await Task.Delay(TimeSpan.FromSeconds(_delaySeconds));
+                    try
                     {
-                        await Task.Delay(TimeSpan.FromSeconds(_delaySeconds));
                         await insertTask;
 
                         var toInsert = new List<ImagePost>();
@@ -57,11 +57,11 @@ namespace KPI.RedditMonitor.Collector
                                 $"[STATS]: Received {toInsert.Count} images with posts in {_delaySeconds} seconds");
                         }
                     }
-                }
-                catch (Exception e)
-                {
-                    _log.LogError(e, "An error occurred during post inserting");
-                    throw;
+                    catch (Exception e)
+                    {
+                        _log.LogError(e, "An error occurred during post inserting");
+                        throw;
+                    }
                 }
             });
         }
