@@ -17,18 +17,22 @@ namespace KPI.RedditMonitor.Collector.RedditPull
         public static IEnumerable<ImagePost> Create(string id, string text, string url, DateTime createdAt, bool ignore)
         {
             var parsed = imageRegexp.Match(text);
+            var urls = new HashSet<string>();
             while (parsed.Success)
             {
-                yield return new ImagePost
+                if (urls.Add(parsed.Value))
                 {
-                    Id = Guid.NewGuid().ToString("D"),
-                    CreatedAt = createdAt,
-                    RedditId = id,
-                    Text = text,
-                    ImageUrl = parsed.Value,
-                    Url = url,
-                    Ignore = ignore
-                };
+                    yield return new ImagePost
+                    {
+                        Id = Guid.NewGuid().ToString("D"),
+                        CreatedAt = createdAt,
+                        RedditId = id,
+                        Text = text,
+                        ImageUrl = parsed.Value,
+                        Url = url,
+                        Ignore = ignore
+                    };
+                }
 
                 parsed = parsed.NextMatch();
             }

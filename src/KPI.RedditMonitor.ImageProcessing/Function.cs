@@ -62,7 +62,6 @@ namespace KPI.RedditMonitor.ImageProcessing
                 var stream = await response.Content.ReadAsStreamAsync();
                 var fileName = imagePost.ImageUrl.Split("/").Last();
 
-
                 var imageName = $"{Guid.NewGuid():N}/{fileName}";
                 await _s3.PutObjectAsync(new PutObjectRequest()
                 {
