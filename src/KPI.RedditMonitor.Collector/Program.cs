@@ -1,4 +1,5 @@
 ﻿using System;
+using Amazon.SQS;
 using KPI.RedditMonitor.Collector.RedditPull;
 using KPI.RedditMonitor.Data;
 using Microsoft.Extensions.Configuration;
@@ -30,6 +31,7 @@ namespace KPI.RedditMonitor.Collector
                 {
                     services.Configure<MongoDbConfig>(c => context.Configuration.Bind("MongoDb", c));
                     services.Configure<RedditOptions>(o => context.Configuration.Bind("Reddit", o));
+                    services.Configure<PostQueueOptions>(o => context.Configuration.Bind("PostQueue", o));
 
                     services.AddSingleton<IMongoClient>(p =>
                     {
@@ -39,12 +41,9 @@ namespace KPI.RedditMonitor.Collector
 
                     services.AddSingleton<ImagePostsRepository>();
                     services.AddSingleton<RedditCollector>();
-                    services.AddSingleton<PostInserter>(p =>
-                    {
-                        var log = p.GetRequiredService<ILogger<PostInserter>>();
-                        var repo = p.GetRequiredService<ImagePostsRepository>();
-                        return new PostInserter(repo, log, 30);
-                    });
+                    services.AddSingleton<PostInserter>();
+
+                    services.AddAWSService<IAmazonSQS>();
 
                     services.AddHostedService<RedditCollectorService>();
                 })

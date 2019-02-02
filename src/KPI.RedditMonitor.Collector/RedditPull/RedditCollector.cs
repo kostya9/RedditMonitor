@@ -27,13 +27,12 @@ namespace KPI.RedditMonitor.Collector.RedditPull
                 var source = new CancellationTokenSource(TimeSpan.FromHours(1));
 
                 cancellationToken.Register(() => source.Cancel());
-
                 var webAgent = new BotWebAgent(_options.Username, _options.Password, _options.ClientId,
                     _options.ClientSecret, _options.CallbackUrl)
                 {
-                    UserAgent = _options.UserAgent
+                    UserAgent = $"{System.Runtime.InteropServices.RuntimeInformation.OSDescription}:RedditMonitor:v1.0.0 (by /u/{_options.Username})"
                 };
-                var reddit = new Reddit(webAgent);
+                var reddit = new Reddit(webAgent, false);
 
                 var comments = reddit.RSlashAll.GetComments(limitPerRequest: 100).Stream();
                 var posts = reddit.RSlashAll.GetPosts(Subreddit.Sort.New).Stream();

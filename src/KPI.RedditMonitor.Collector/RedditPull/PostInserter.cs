@@ -4,23 +4,29 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Amazon.SQS;
+using Amazon.SQS.Model;
 using KPI.RedditMonitor.Data;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 
 namespace KPI.RedditMonitor.Collector.RedditPull
 {
     public class PostInserter
     {
-        private readonly int _delaySeconds;
         private readonly ILogger<PostInserter> _log;
         private readonly ConcurrentQueue<ImagePost> _posts;
+        private readonly IAmazonSQS _sqs;
+        private readonly IOptions<PostQueueOptions> _options;
         private readonly ImagePostsRepository _repository;
 
-        public PostInserter(ImagePostsRepository repository, ILogger<PostInserter> log, int delaySeconds)
+        public PostInserter(IAmazonSQS sqs, IOptions<PostQueueOptions> options, ImagePostsRepository repository, ILogger<PostInserter> log)
         {
+            _sqs = sqs;
+            _options = options;
             _repository = repository;
             _log = log;
-            _delaySeconds = delaySeconds;
             _posts = new ConcurrentQueue<ImagePost>();
         }
 
@@ -38,20 +44,14 @@ namespace KPI.RedditMonitor.Collector.RedditPull
                 {
                     try
                     {
-                        await Task.Delay(TimeSpan.FromSeconds(_delaySeconds), cancellationToken);
+                        await Task.Delay(TimeSpan.FromSeconds(_options.Value.BatchDelay), cancellationToken);
                         try
                         {
                             await insertTask;
-
-                            var toInsert = new List<ImagePost>();
-                            while (_posts.TryDequeue(out var post)) toInsert.Add(post);
-
-                            if (toInsert.Any())
-                            {
-                                insertTask = _repository.AddRange(toInsert);
-                                _log.LogInformation(
-                                    $"[STATS]: Received {toInsert.Count} images with posts in {_delaySeconds} seconds");
-                            }
+                            
+                            _log.LogInformation(
+                                $"[STATS]: Received {_posts.Count} images with posts in {_options.Value.BatchDelay} seconds");
+                            await Task.WhenAll(BatchPosts().Select(b => SendMessages(b, cancellationToken)));
                         }
                         catch (Exception e)
                         {
@@ -65,6 +65,34 @@ namespace KPI.RedditMonitor.Collector.RedditPull
                     }
                 }
             });
+        }
+
+        private IEnumerable<IEnumerable<ImagePost>> BatchPosts()
+        {
+            var batchSize = 10;
+            while (_posts.Any())
+            {
+                var batch = new List<ImagePost>(10);
+                for (int i = 0; i < batchSize && _posts.TryDequeue(out var post); i++)
+                {
+                    batch.Add(post);
+                }
+
+                yield return batch;
+            }
+        }
+
+        private async Task SendMessages(IEnumerable<ImagePost> posts, CancellationToken cancellationToken)
+        {
+            await _sqs.SendMessageBatchAsync(new SendMessageBatchRequest
+            {
+                QueueUrl = _options.Value.QueueUrl,
+                Entries = posts.Select(p => new SendMessageBatchRequestEntry
+                {
+                    Id = Guid.NewGuid().ToString("D"),
+                    MessageBody = JsonConvert.SerializeObject(p)
+                }).ToList()
+            }, cancellationToken);
         }
     }
 }

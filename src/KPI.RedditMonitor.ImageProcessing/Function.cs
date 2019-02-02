@@ -1,10 +1,12 @@
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 using Amazon.Lambda.Core;
 using Amazon.Lambda.SQSEvents;
+using KPI.RedditMonitor.Data;
+using Microsoft.Extensions.Configuration;
+using MongoDB.Driver;
+using Newtonsoft.Json;
 
 
 // Assembly attribute to enable the Lambda function's JSON input to be converted into a .NET class.
@@ -14,6 +16,8 @@ namespace KPI.RedditMonitor.ImageProcessing
 {
     public class Function
     {
+        private readonly ImagePostsRepository _repository;
+
         /// <summary>
         /// Default constructor. This constructor is used by Lambda to construct the instance. When invoked in a Lambda environment
         /// the AWS credentials will come from the IAM role associated with the function and the AWS region will be set to the
@@ -21,7 +25,12 @@ namespace KPI.RedditMonitor.ImageProcessing
         /// </summary>
         public Function()
         {
-
+            var config = new ConfigurationBuilder()
+                .AddJsonFile($"appsettings.Development.json", true)
+                .AddEnvironmentVariables()
+                .Build();
+            var mongoClient = new MongoClient(config["MongoDb:ConnectionString"]);
+            _repository = new ImagePostsRepository(mongoClient);
         }
 
 
@@ -34,18 +43,11 @@ namespace KPI.RedditMonitor.ImageProcessing
         /// <returns></returns>
         public async Task FunctionHandler(SQSEvent evnt, ILambdaContext context)
         {
-            foreach(var message in evnt.Records)
-            {
-                await ProcessMessageAsync(message, context);
-            }
-        }
+            var posts = evnt.Records.Select(e => JsonConvert.DeserializeObject<ImagePost>(e.Body)).ToArray();
 
-        private async Task ProcessMessageAsync(SQSEvent.SQSMessage message, ILambdaContext context)
-        {
-            context.Logger.LogLine($"Processed message {message.Body}");
+            await _repository.AddRange(posts);
 
-            // TODO: Do interesting work based on the new message
-            await Task.CompletedTask;
+            context.Logger.LogLine($"Inserted {posts.Length} posts");
         }
     }
 }

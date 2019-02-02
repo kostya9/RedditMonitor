@@ -378,3 +378,5 @@ healthchecksdb
 appsettings.Development.json
 
 obj/**
+
+**/aws-lambda-tools-defaults.json
