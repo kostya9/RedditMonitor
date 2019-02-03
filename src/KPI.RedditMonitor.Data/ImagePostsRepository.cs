@@ -84,8 +84,7 @@ namespace KPI.RedditMonitor.Data
                 return result.Current.Select(c => c.image).ToList();
             }
         }
-
-        [BsonIgnoreExtraElements]
+        
         private class AggregateResult
         {
             public string Id { get; set; }

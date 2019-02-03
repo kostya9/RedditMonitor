@@ -9,14 +9,12 @@ namespace KPI.RedditMonitor.ImageProcessing.Similarity
     /// </summary>
     public class ImageFeatures
     {
-        public string Path { get; }
         private readonly List<Histogram> _histograms;
 
         public IReadOnlyCollection<Histogram> Histograms => _histograms;
 
-        public ImageFeatures(string path)
+        public ImageFeatures()
         {
-            Path = path;
             _histograms = new List<Histogram>();
         }
 

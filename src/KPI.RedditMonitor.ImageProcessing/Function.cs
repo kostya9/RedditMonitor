@@ -75,7 +75,7 @@ namespace KPI.RedditMonitor.ImageProcessing
 
                     using (var content = await response.Content.ReadAsStreamAsync())
                     {
-                        var features = GetFeatures(imagePost.ImageUrl, content);
+                        var features = ImageFeatureFactory.Create(content);
 
                         imagePost.FeatureBuckets = new Dictionary<string, double[]>();
                         foreach (var featuresHistogram in features.Histograms)
@@ -100,29 +100,6 @@ namespace KPI.RedditMonitor.ImageProcessing
             }
 
             context.Logger.LogLine($"Inserted {inserted} posts");
-        }
-
-        private ImageFeatures GetFeatures(string url, Stream content)
-        {
-            var histograms = new ImageFeatures(url);
-            using (var image = Image.Load(content))
-            {
-                var buckets = 4;
-                var minRgb = 0;
-                var maxRgb = 255;
-                var red = histograms.Add("red", buckets, minRgb, maxRgb);
-                var green = histograms.Add("green", buckets, minRgb, maxRgb);
-                var blue = histograms.Add("blue", buckets, minRgb, maxRgb);
-
-                foreach (var pixel in image.GetPixelSpan())
-                {
-                    red.Add(pixel.R);
-                    blue.Add(pixel.B);
-                    green.Add(pixel.G);
-                }
-            }
-
-            return histograms;
         }
     }
 }
