@@ -29,6 +29,12 @@ namespace KPI.RedditMonitor.Data
             await _collection.InsertOneAsync(imagePost);
         }
 
+        /// <summary>
+        /// Algorithm uses Chi-squared distance to compare color histograms SUM((H1 - H2)^2 / H1)
+        /// </summary>
+        /// <param name="features"></param>
+        /// <param name="top"></param>
+        /// <returns></returns>
         public async Task<List<ImagePost>> Get(Dictionary<string, double[]> features, int top = 10)
         {
             var reds = BsonArray.Create(features["red"]);
@@ -40,7 +46,7 @@ namespace KPI.RedditMonitor.Data
         $addFields: {
             reds: {
                 $zip: {
-                    inputs:[ " + reds + @", '$FeatureBuckets.red']
+                    inputs: [" + reds + @", '$FeatureBuckets.red']
                 }
             },
             blues: {
@@ -56,20 +62,49 @@ namespace KPI.RedditMonitor.Data
         }
     },
     {
-        $addFields: {allFeatures: {$concatArrays: ['$greens', '$reds', '$blues']}}
+        $addFields: {
+            allFeatures: {
+                $concatArrays: ['$greens', '$reds', '$blues']
+            }
+        }
     },
     {
-        $unwind: {path: '$allFeatures'}
+        $unwind: {
+            path: '$allFeatures'
+        }
+    },
+    {
+        $addFields: {
+            diff: {
+                $divide: [{
+                    $pow: [{
+                        $subtract: [{
+                            $arrayElemAt: ['$allFeatures', 0]
+                        }, {
+                            $arrayElemAt: ['$allFeatures', 1]
+                        }]
+                    }, 2]
+                }, {
+                    $arrayElemAt: ['$allFeatures', 0]
+                }]
+            }
+        }
     },
     {
         $group: {
             _id: '$_id',
-            totalDistance: {$sum: {$reduce: { input: '$allFeatures', initialValue: 0, in: {$abs: {$subtract: ['$$value', '$$this']}} }}},
-            image: { '$first': '$$ROOT'}
+            totalDistance: {
+                $sum: '$diff'
+            },
+            image: {
+                '$first': '$$ROOT'
+            }
         }
     },
     {
-        $sort: { 'totalDistance': 1}
+        $sort: {
+            'totalDistance': 1
+        }
     },
     {
         $limit: 5
