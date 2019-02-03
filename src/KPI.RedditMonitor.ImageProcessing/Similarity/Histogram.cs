@@ -41,15 +41,9 @@ namespace KPI.RedditMonitor.ImageProcessing.Similarity
 
         private int GetValueIndex(double value)
         {
-            var step = (_maxValue - _minValue) / _buckets.Length;
-
-            for (var i = 0; i < _buckets.Length; i++)
-            {
-                if (value <= _minValue + step * (i + 1))
-                    return i;
-            }
-
-            return _buckets.Length - 1;
+            var step = (_maxValue - _minValue + 1) / _buckets.Length;
+            var idx = (int)((value - _minValue) / step);
+            return idx;
         }
     }
 }
