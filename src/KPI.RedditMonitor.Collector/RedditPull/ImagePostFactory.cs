@@ -20,7 +20,25 @@ namespace KPI.RedditMonitor.Collector.RedditPull
             var urls = new HashSet<string>();
             while (parsed.Success)
             {
-                if (urls.Add(parsed.Value))
+                string imageUrl;
+                try
+                {
+                    var uri = new Uri(parsed.Value);
+                    imageUrl = uri.GetLeftPart(UriPartial.Path);
+
+                    if (!imageRegexp.IsMatch(imageUrl))
+                    {
+                        parsed = parsed.NextMatch();
+                        continue;
+                    }
+                }
+                catch (UriFormatException)
+                {
+                    parsed = parsed.NextMatch();
+                    continue;
+                }
+
+                if (urls.Add(imageUrl))
                 {
                     yield return new ImagePost
                     {
@@ -28,7 +46,7 @@ namespace KPI.RedditMonitor.Collector.RedditPull
                         CreatedAt = createdAt,
                         RedditId = id,
                         Text = text,
-                        ImageUrl = parsed.Value,
+                        ImageUrl = imageUrl,
                         Url = url,
                         Ignore = ignore
                     };
