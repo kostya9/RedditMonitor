@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -8,9 +10,12 @@ using Amazon.Lambda.SQSEvents;
 using Amazon.S3;
 using Amazon.S3.Model;
 using KPI.RedditMonitor.Data;
+using KPI.RedditMonitor.ImageProcessing.Similarity;
 using Microsoft.Extensions.Configuration;
 using MongoDB.Driver;
 using Newtonsoft.Json;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Advanced;
 
 
 // Assembly attribute to enable the Lambda function's JSON input to be converted into a .NET class.
@@ -59,23 +64,43 @@ namespace KPI.RedditMonitor.ImageProcessing
             foreach (var imagePost in posts)
             {
                 var response = await _httpClient.GetAsync(imagePost.ImageUrl);
-                var stream = await response.Content.ReadAsStreamAsync();
-                var fileName = imagePost.ImageUrl.Split("/").Last();
-
-                var imageName = $"{Guid.NewGuid():N}/{fileName}";
-                await _s3.PutObjectAsync(new PutObjectRequest()
+                using (var content = await response.Content.ReadAsStreamAsync())
                 {
-                    InputStream = stream,
-                    Key = imageName,
-                    AutoCloseStream = true,
-                    CannedACL = S3CannedACL.PublicRead,
-                    BucketName = _bucket
-                });
-                imagePost.S3Path = imageName;
+                    var features = GetFeatures(imagePost.ImageUrl, content);
+
+                    imagePost.FeatureBuckets = new Dictionary<string, double[]>();
+                    foreach (var featuresHistogram in features.Histograms)
+                    {
+                        imagePost.FeatureBuckets[featuresHistogram.Name] = featuresHistogram.GetBuckets();
+                    }
+                }
                 await _repository.Add(imagePost);
             }
 
             context.Logger.LogLine($"Inserted {posts.Length} posts");
+        }
+
+        private ImageFeatures GetFeatures(string url, Stream content)
+        {
+            var histograms = new ImageFeatures(url);
+            using (var image = Image.Load(content))
+            {
+                var buckets = 4;
+                var minRgb = 0;
+                var maxRgb = 255;
+                var red = histograms.Add("red", buckets, minRgb, maxRgb);
+                var green = histograms.Add("green", buckets, minRgb, maxRgb);
+                var blue = histograms.Add("blue", buckets, minRgb, maxRgb);
+
+                foreach (var pixel in image.GetPixelSpan())
+                {
+                    red.Add(pixel.R);
+                    blue.Add(pixel.B);
+                    green.Add(pixel.G);
+                }
+            }
+
+            return histograms;
         }
     }
 }

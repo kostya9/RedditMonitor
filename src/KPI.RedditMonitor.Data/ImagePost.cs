@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace KPI.RedditMonitor.Data
 {
@@ -18,6 +19,6 @@ namespace KPI.RedditMonitor.Data
 
         public bool Ignore { get; set; }
 
-        public string S3Path { get; set; }
+        public Dictionary<string, double[]> FeatureBuckets { get; set; }
     }
 }
