@@ -303,6 +303,10 @@ FakesAssemblies/
 .ntvs_analysis.dat
 node_modules/
 
+.DS_Store
+dist/
+npm-debug.log
+
 # Visual Studio 6 build log
 *.plg
 
