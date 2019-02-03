@@ -1,16 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace KPI.RedditMonitor.ImageProcessing.Similarity
-{ 
+{
     public class Histogram
     {
         public string Name { get; }
 
         private readonly double _minValue;
         private readonly double _maxValue;
-        private readonly List<double>[] _buckets;
+        private readonly int[] _buckets;
 
         private int _total;
 
@@ -20,12 +19,7 @@ namespace KPI.RedditMonitor.ImageProcessing.Similarity
             _minValue = minValue;
             _maxValue = maxValue;
 
-            _buckets = new List<double>[buckets];
-
-            for (int i = 0; i < _buckets.Length; i++)
-            {
-                _buckets[i] = new List<double>();
-            }
+            _buckets = new int[buckets];
 
             _total = 0;
         }
@@ -35,13 +29,13 @@ namespace KPI.RedditMonitor.ImageProcessing.Similarity
             if (value > _maxValue || value < _minValue)
                 throw new ArgumentException($"Value {value} is out of bounds");
 
-            _buckets[GetValueIndex(value)].Add(value);
+            _buckets[GetValueIndex(value)]++;
             _total++;
         }
 
         public double[] GetBuckets()
         {
-            var normalized = _buckets.Select(b => b.Count / (double)_total).ToArray();
+            var normalized = _buckets.Select(b => b / (double)_total).ToArray();
             return normalized;
         }
 

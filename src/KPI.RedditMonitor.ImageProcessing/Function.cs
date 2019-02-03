@@ -59,11 +59,22 @@ namespace KPI.RedditMonitor.ImageProcessing
         /// <returns></returns>
         public async Task FunctionHandler(SQSEvent evnt, ILambdaContext context)
         {
-            var posts = evnt.Records.Select(e => JsonConvert.DeserializeObject<ImagePost>(e.Body)).ToArray();
+            var maxImageSize = 5 * 1024 * 1024;
+            var inserted = 0;
+            var posts = evnt.Records.Select(e => JsonConvert.DeserializeObject<ImagePost>(e.Body));
 
             foreach (var imagePost in posts)
             {
-                var response = await _httpClient.GetAsync(imagePost.ImageUrl);
+                var response = await _httpClient.GetAsync(imagePost.ImageUrl, HttpCompletionOption.ResponseHeadersRead);
+
+                int length = int.Parse(response.Content.Headers.First(h => h.Key.Equals("Content-Length")).Value.First());
+
+                if (length > maxImageSize)
+                {
+                    context.Logger.LogLine($"Could not save image {imagePost.ImageUrl} - it was too big");
+                    continue;
+                }
+
                 using (var content = await response.Content.ReadAsStreamAsync())
                 {
                     var features = GetFeatures(imagePost.ImageUrl, content);
@@ -74,10 +85,19 @@ namespace KPI.RedditMonitor.ImageProcessing
                         imagePost.FeatureBuckets[featuresHistogram.Name] = featuresHistogram.GetBuckets();
                     }
                 }
-                await _repository.Add(imagePost);
+
+                try
+                {
+                    await _repository.Add(imagePost);
+                    inserted++;
+                }
+                catch (AggregateException aggregate) when (aggregate.InnerExceptions.Any(e => e.Message.Contains("E11000 duplicate key error index")))
+                {
+                    context.Logger.LogLine($"Could not save {imagePost.ImageUrl}, seems that it was already inserted");
+                }
             }
 
-            context.Logger.LogLine($"Inserted {posts.Length} posts");
+            context.Logger.LogLine($"Inserted {inserted} posts");
         }
 
         private ImageFeatures GetFeatures(string url, Stream content)
