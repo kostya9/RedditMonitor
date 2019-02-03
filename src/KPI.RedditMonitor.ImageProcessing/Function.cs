@@ -7,8 +7,6 @@ using System.Threading.Tasks;
 
 using Amazon.Lambda.Core;
 using Amazon.Lambda.SQSEvents;
-using Amazon.S3;
-using Amazon.S3.Model;
 using KPI.RedditMonitor.Data;
 using KPI.RedditMonitor.ImageProcessing.Similarity;
 using Microsoft.Extensions.Configuration;
@@ -16,6 +14,7 @@ using MongoDB.Driver;
 using Newtonsoft.Json;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Advanced;
+using SixLabors.Memory;
 
 
 // Assembly attribute to enable the Lambda function's JSON input to be converted into a .NET class.
@@ -26,9 +25,7 @@ namespace KPI.RedditMonitor.ImageProcessing
     public class Function
     {
         private readonly ImagePostsRepository _repository;
-        private readonly AmazonS3Client _s3;
         private readonly HttpClient _httpClient;
-        private readonly string _bucket;
 
         /// <summary>
         /// Default constructor. This constructor is used by Lambda to construct the instance. When invoked in a Lambda environment
@@ -43,10 +40,9 @@ namespace KPI.RedditMonitor.ImageProcessing
                 .Build();
             var mongoClient = new MongoClient(config["MongoDb:ConnectionString"]);
 
-            _bucket = "euw-1-redditmonitor-images";
             _repository = new ImagePostsRepository(mongoClient);
-            _s3 = new AmazonS3Client();
             _httpClient = new HttpClient();
+            Configuration.Default.MemoryAllocator = ArrayPoolMemoryAllocator.CreateWithModeratePooling();
         }
 
 
@@ -65,24 +61,27 @@ namespace KPI.RedditMonitor.ImageProcessing
 
             foreach (var imagePost in posts)
             {
-                var response = await _httpClient.GetAsync(imagePost.ImageUrl, HttpCompletionOption.ResponseHeadersRead);
-
-                int length = int.Parse(response.Content.Headers.First(h => h.Key.Equals("Content-Length")).Value.First());
-
-                if (length > maxImageSize)
+                using (var response =
+                    await _httpClient.GetAsync(imagePost.ImageUrl, HttpCompletionOption.ResponseHeadersRead))
                 {
-                    context.Logger.LogLine($"Could not save image {imagePost.ImageUrl} - it was too big");
-                    continue;
-                }
+                    int length = int.Parse(response.Content.Headers.First(h => h.Key.Equals("Content-Length")).Value
+                        .First());
 
-                using (var content = await response.Content.ReadAsStreamAsync())
-                {
-                    var features = GetFeatures(imagePost.ImageUrl, content);
-
-                    imagePost.FeatureBuckets = new Dictionary<string, double[]>();
-                    foreach (var featuresHistogram in features.Histograms)
+                    if (length > maxImageSize)
                     {
-                        imagePost.FeatureBuckets[featuresHistogram.Name] = featuresHistogram.GetBuckets();
+                        context.Logger.LogLine($"Could not save image {imagePost.ImageUrl} - it was too big");
+                        continue;
+                    }
+
+                    using (var content = await response.Content.ReadAsStreamAsync())
+                    {
+                        var features = GetFeatures(imagePost.ImageUrl, content);
+
+                        imagePost.FeatureBuckets = new Dictionary<string, double[]>();
+                        foreach (var featuresHistogram in features.Histograms)
+                        {
+                            imagePost.FeatureBuckets[featuresHistogram.Name] = featuresHistogram.GetBuckets();
+                        }
                     }
                 }
 
@@ -95,6 +94,7 @@ namespace KPI.RedditMonitor.ImageProcessing
                 {
                     context.Logger.LogLine($"Could not save {imagePost.ImageUrl}, seems that it was already inserted");
                 }
+                
             }
 
             context.Logger.LogLine($"Inserted {inserted} posts");
