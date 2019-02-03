@@ -14,4 +14,8 @@
     <PackageReference Include="Amazon.Lambda.AspNetCoreServer" Version="2.1.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\KPI.RedditMonitor.ImageProcessing\KPI.RedditMonitor.ImageProcessing.csproj" />
+  </ItemGroup>
+
 </Project>

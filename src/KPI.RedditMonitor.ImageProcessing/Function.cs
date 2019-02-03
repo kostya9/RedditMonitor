@@ -55,7 +55,7 @@ namespace KPI.RedditMonitor.ImageProcessing
         /// <returns></returns>
         public async Task FunctionHandler(SQSEvent evnt, ILambdaContext context)
         {
-            var maxImageSize = 5 * 1024 * 1024;
+            var maxImageSize = 3 * 1024 * 1024;
             var inserted = 0;
             var posts = evnt.Records.Select(e => JsonConvert.DeserializeObject<ImagePost>(e.Body));
 
@@ -85,12 +85,14 @@ namespace KPI.RedditMonitor.ImageProcessing
                     }
                 }
 
+                var duplicateError = "E11000 duplicate key error index";
                 try
                 {
                     await _repository.Add(imagePost);
                     inserted++;
                 }
-                catch (AggregateException aggregate) when (aggregate.InnerExceptions.Any(e => e.Message.Contains("E11000 duplicate key error index")))
+                catch (MongoWriteException e)
+                    when (e.Message.Contains(duplicateError))
                 {
                     context.Logger.LogLine($"Could not save {imagePost.ImageUrl}, seems that it was already inserted");
                 }
