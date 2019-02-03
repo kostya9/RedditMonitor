@@ -1,19 +1,16 @@
-using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 
 using Amazon.Lambda.Core;
 using Amazon.Lambda.SQSEvents;
+using KPI.RedditMonitor.Application.Similarity;
 using KPI.RedditMonitor.Data;
-using KPI.RedditMonitor.ImageProcessing.Similarity;
 using Microsoft.Extensions.Configuration;
 using MongoDB.Driver;
 using Newtonsoft.Json;
 using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Advanced;
 using SixLabors.Memory;
 
 
@@ -76,12 +73,8 @@ namespace KPI.RedditMonitor.ImageProcessing
                     using (var content = await response.Content.ReadAsStreamAsync())
                     {
                         var features = ImageFeatureFactory.Create(content);
-
-                        imagePost.FeatureBuckets = new Dictionary<string, double[]>();
-                        foreach (var featuresHistogram in features.Histograms)
-                        {
-                            imagePost.FeatureBuckets[featuresHistogram.Name] = featuresHistogram.GetBuckets();
-                        }
+                        
+                        imagePost.FeatureBuckets = features.GetBuckets();
                     }
                 }
 

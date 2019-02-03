@@ -1,10 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 
 namespace KPI.RedditMonitor.Api
 {
@@ -20,6 +16,7 @@ namespace KPI.RedditMonitor.Api
 
         public static IWebHost BuildWebHost(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
+                .ConfigureAppConfiguration(builder => builder.AddJsonFile("appsettings.Development.json", true))
                 .UseStartup<Startup>()
                 .Build();
     }

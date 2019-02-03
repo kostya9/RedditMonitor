@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-namespace KPI.RedditMonitor.ImageProcessing.Similarity
+namespace KPI.RedditMonitor.Application.Similarity
 {
     public class Histogram
     {
@@ -11,8 +11,6 @@ namespace KPI.RedditMonitor.ImageProcessing.Similarity
         private readonly double _maxValue;
         private readonly int[] _buckets;
 
-        private int _total;
-
         public Histogram(string name, int buckets, double minValue, double maxValue)
         {
             Name = name;
@@ -20,8 +18,6 @@ namespace KPI.RedditMonitor.ImageProcessing.Similarity
             _maxValue = maxValue;
 
             _buckets = new int[buckets];
-
-            _total = 0;
         }
 
         public void Add(double value)
@@ -30,12 +26,11 @@ namespace KPI.RedditMonitor.ImageProcessing.Similarity
                 throw new ArgumentException($"Value {value} is out of bounds");
 
             _buckets[GetValueIndex(value)]++;
-            _total++;
         }
 
-        public double[] GetBuckets()
+        public double[] GetBuckets(int totalPixels)
         {
-            var normalized = _buckets.Select(b => b / (double)_total).ToArray();
+            var normalized = _buckets.Select(b => b / (double)totalPixels).ToArray();
             return normalized;
         }
 

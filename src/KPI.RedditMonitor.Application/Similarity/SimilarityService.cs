@@ -3,9 +3,8 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using KPI.RedditMonitor.Data;
-using KPI.RedditMonitor.ImageProcessing.Similarity;
 
-namespace KPI.RedditMonitor.Api.Similarity
+namespace KPI.RedditMonitor.Application.Similarity
 {
     public class SimilarityService
     {
@@ -20,7 +19,7 @@ namespace KPI.RedditMonitor.Api.Similarity
         {
             var imageFeatures = ImageFeatureFactory.Create(content);
 
-            var features = imageFeatures.Histograms.ToDictionary(h => h.Name, h => h.GetBuckets());
+            var features = imageFeatures.GetBuckets();
             return await _repository.Get(features);
         }
     }

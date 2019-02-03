@@ -12,10 +12,10 @@
     <PackageReference Include="Amazon.Lambda.SQSEvents" Version="1.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="2.1.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.1.0" />
-    <PackageReference Include="SixLabors.ImageSharp" Version="1.0.0-beta0006" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\KPI.RedditMonitor.Application\KPI.RedditMonitor.Application.csproj" />
     <ProjectReference Include="..\KPI.RedditMonitor.Data\KPI.RedditMonitor.Data.csproj" />
   </ItemGroup>
 

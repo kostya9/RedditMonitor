@@ -1,20 +1,18 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using KPI.RedditMonitor.Application.Similarity;
+using KPI.RedditMonitor.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using MongoDB.Bson.Serialization.Conventions;
+using MongoDB.Driver;
 
 namespace KPI.RedditMonitor.Api
 {
     public class Startup
     {
-        public const string AppS3BucketKey = "AppS3Bucket";
-
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -25,10 +23,21 @@ namespace KPI.RedditMonitor.Api
         // This method gets called by the runtime. Use this method to add services to the container
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.Configure<MongoDbConfig>(c => Configuration.Bind("MongoDb", c));
 
-            // Add S3 to the ASP.NET Core dependency injection framework.
-            services.AddAWSService<Amazon.S3.IAmazonS3>();
+            services.AddSingleton<IMongoClient>(p =>
+            {
+                var conventionPack = new ConventionPack { new IgnoreExtraElementsConvention(true) };
+                ConventionRegistry.Register("ignoreExtra", conventionPack, t => true);
+                var config = p.GetRequiredService<IOptions<MongoDbConfig>>();
+                return new MongoClient(config.Value.ConnectionString);
+            });
+
+            services.AddSingleton<ImagePostsRepository>();
+            services.AddSingleton<SimilarityService>();
+
+
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline

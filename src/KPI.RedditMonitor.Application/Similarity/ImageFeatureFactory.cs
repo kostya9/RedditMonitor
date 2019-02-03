@@ -2,7 +2,7 @@
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Advanced;
 
-namespace KPI.RedditMonitor.ImageProcessing.Similarity
+namespace KPI.RedditMonitor.Application.Similarity
 {
     public static class ImageFeatureFactory
     {
@@ -14,15 +14,15 @@ namespace KPI.RedditMonitor.ImageProcessing.Similarity
                 var buckets = 4;
                 var minRgb = 0;
                 var maxRgb = 255;
-                var red = histograms.Add("red", buckets, minRgb, maxRgb);
-                var green = histograms.Add("green", buckets, minRgb, maxRgb);
-                var blue = histograms.Add("blue", buckets, minRgb, maxRgb);
+                histograms.AddHistogram("red", buckets, minRgb, maxRgb);
+                histograms.AddHistogram("green", buckets, minRgb, maxRgb);
+                histograms.AddHistogram("blue", buckets, minRgb, maxRgb);
 
                 foreach (var pixel in image.GetPixelSpan())
                 {
-                    red.Add(pixel.R);
-                    blue.Add(pixel.B);
-                    green.Add(pixel.G);
+                    histograms.AddPixel("red", pixel.R);
+                    histograms.AddPixel("blue", pixel.B);
+                    histograms.AddPixel("green", pixel.G);
                 }
             }
 
