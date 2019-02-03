@@ -52,6 +52,7 @@ namespace KPI.RedditMonitor.Api
                 app.UseHsts();
             }
 
+            app.UseCors(b => { b.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:8080"); });
             app.UseHttpsRedirection();
             app.UseMvc();
         }
