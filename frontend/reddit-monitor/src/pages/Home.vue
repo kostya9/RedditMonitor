@@ -2,7 +2,7 @@
   <div id="app">
     <div class="container">
         <h1 class="uk-header-primary">
-            Find Similarity
+            Find Similar Images
         </h1>
         <div class="uk-margin">
             <div uk-form-custom>

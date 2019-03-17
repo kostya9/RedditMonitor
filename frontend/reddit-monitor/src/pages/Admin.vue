@@ -14,6 +14,11 @@
                 <span class="uk-text-lead">Images were found by RedditCollector</span>
             </div>
         </div>
+        <div class="uk-text-center">
+            <h1 class="uk-heading-primary">
+                Top images by their url
+            </h1>
+        </div>
         <div uk-grid class="uk-gird-match uk-grid-divider">
             <top-image v-for="(item, index) in images" :image="item" :key="index" @ignore="() => ignore(item)" :showingIgnored="showingIgnored"> </top-image>
         </div>
