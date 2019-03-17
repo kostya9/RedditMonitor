@@ -21,5 +21,6 @@
   become_method: sudo
   systemd:
     name: redditmonitor
+    daemon_reload: yes
     state: restarted
     enabled: yes
