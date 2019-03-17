@@ -10,9 +10,9 @@ namespace KPI.RedditMonitor.Data
     {
         private readonly IMongoCollection<ImagePost> _collection;
 
-        public TopImageDbAdapter(IMongoCollection<ImagePost> collection)
+        public TopImageDbAdapter(IMongoClient client)
         {
-            _collection = collection;
+            _collection = client.GetDatabase("reddit").GetCollection<ImagePost>("posts");
         }
 
         public Task Ignore(string imageUrl, bool ignoreValue)
