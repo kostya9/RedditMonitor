@@ -1,0 +1,3 @@
+- name: Package NetCore bundle
+  run_once: true
+  local_action: command chdir=.. dotnet publish -c Release
