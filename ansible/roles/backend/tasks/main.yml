@@ -1,8 +1,25 @@
+- include_tasks: install-dotnet.yml
+
 - name: Package NetCore bundle
   run_once: true
   local_action: command chdir=.. dotnet publish -c Release
+
 - name: Copy NetCore bundle to target
   synchronize:
-    src: ../src/KPI.RedditMonitor.Api/bin/Release/netcoreapp2.2/publish
-    dest: /home/ubuntu/redditmonitor
-- include_tasks: install-dotnet.yml
+    src: ../src/KPI.RedditMonitor.Api/bin/Release/netcoreapp2.2/publish/
+    dest: /home/ubuntu/redditmonitor/
+
+- name: Copy systemd service file
+  become: true
+  become_method: sudo
+  template:
+    src: redditmonitor.service.j2
+    dest: /etc/systemd/system/redditmonitor.service
+
+- name: Start redditmonitor service
+  become: true
+  become_method: sudo
+  systemd:
+    name: redditmonitor
+    state: restarted
+    enabled: yes

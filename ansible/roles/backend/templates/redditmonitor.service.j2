@@ -1,0 +1,12 @@
+[Unit]
+Description=RedditMonitor API host
+
+[Service]
+ExecStart=/usr/bin/dotnet /home/ubuntu/redditmonitor/KPI.RedditMonitor.Api.dll --server.urls=http://0.0.0.0:5000
+Type=simple
+User=ubuntu
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target
