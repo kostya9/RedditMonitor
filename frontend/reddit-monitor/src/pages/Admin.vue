@@ -40,22 +40,26 @@ export default {
             imageStats: {images: 0, seconds: 0}
         }
     },
-    mounted() {
-        const basePath = BaseUrl.Value;
-        axios.get(`${basePath}/api/TopImages?ignored=${this.showingIgnored}`)
+    created() {
+        const fetchImagesData = () => axios.get(`${BaseUrl.Value}/api/TopImages?ignored=${this.showingIgnored}`)
             .then((d) => {
                 const {images, total, ignored} = d.data;
                 this.images = images;
                 this.total = total;
                 this.ignored = ignored;
             });
-    },
-    created() {
+
+        const fetchCollectionData = () => axios.get(`${BaseUrl.Value}/api/RedditPullStats`)
+            .then(d => {
+                this.imageStats = d.data;
+            });
+
+        fetchImagesData();
+        fetchCollectionData();
+
         setInterval(() => {
-            axios.get(`${BaseUrl.Value}/api/RedditPullStats`)
-                .then(d => {
-                    this.imageStats = d.data;
-                })
+            fetchImagesData();
+            fetchCollectionData();
         }, 35 * 1000);
     },
     methods: {
