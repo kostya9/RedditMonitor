@@ -19,7 +19,7 @@ namespace KPI.RedditMonitor.Api.Controllers
         [HttpGet]
         public async Task<ActionResult<TopImageResponse>> Get([FromQuery]bool ignored = false)
         {
-            var images = await _topImages.GetTop(50, ignored);
+            var images = await _topImages.GetTop(!ignored ? 12 : 100, ignored);
             var count = await _topImages.GetCount();
 
             return new TopImageResponse
