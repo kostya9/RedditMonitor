@@ -35,8 +35,8 @@ export default {
         }
     },
     mounted() {
-        //const basePath = '';
-        const basePath = 'http://localhost:64621';
+        const basePath = '';
+        //const basePath = 'http://localhost:64621';
         axios.get(`${basePath}/api/TopImages?ignored=${this.showingIgnored}`)
             .then((d) => {
                 const {images, total, ignored} = d.data;
@@ -50,7 +50,8 @@ export default {
             item.open = !item.open;
         },
         ignore(item) {
-            const basePath = 'http://localhost:64621';
+            //const basePath = 'http://localhost:64621';
+            const basePath = '';
             axios.post(`${basePath}/api/TopImages/ignore`, {value: !this.showingIgnored, imageUrl: item.url})
                 .then(() => axios.get(`${basePath}/api/TopImages?ignored=${this.showingIgnored}`))
                 .then((d) => {
@@ -69,15 +70,15 @@ export default {
             this.reload();
         },
         reload() {
-                    //const basePath = '';
-        const basePath = 'http://localhost:64621';
-        axios.get(`${basePath}/api/TopImages?ignored=${this.showingIgnored}`)
-            .then((d) => {
-                const {images, total, ignored} = d.data;
-                this.images = images;
-                this.total = total;
-                this.ignored = ignored;
-            });
+            const basePath = '';
+            //const basePath = 'http://localhost:64621';
+            axios.get(`${basePath}/api/TopImages?ignored=${this.showingIgnored}`)
+                .then((d) => {
+                    const {images, total, ignored} = d.data;
+                    this.images = images;
+                    this.total = total;
+                    this.ignored = ignored;
+                });
         }
     },
 }

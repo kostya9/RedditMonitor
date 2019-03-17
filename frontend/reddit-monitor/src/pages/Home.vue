@@ -35,8 +35,8 @@ export default {
     filesChange(n, f) {
       const formData = new FormData();
       formData.append('file',f[0]);
-      //const basePath = '';
-      const basePath = 'http://localhost:64621';
+      const basePath = '';
+      //const basePath = 'http://localhost:64621';
       axios.post(`${basePath}/api/Similarity`, formData)
         .then(d => {
           this.images = d.data;
