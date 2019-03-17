@@ -1,5 +1,11 @@
 ---
 - hosts: all
+  name: install python
+  gather_facts: false
+  remote_user: ubuntu
+- hosts: all
+  pre_tasks:
+  - raw: sudo apt-get -y install python-simplejson
   remote_user: ubuntu
   roles:
     - backend
