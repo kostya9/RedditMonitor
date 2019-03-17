@@ -43,6 +43,13 @@ namespace KPI.RedditMonitor.Data
 
             var query = @"
 [{
+        $match: {
+            Ignore: {
+                '$in': [null, false]
+            }
+        }
+    },
+    {
         $addFields: {
             reds: {
                 $zip: {
@@ -94,6 +101,17 @@ namespace KPI.RedditMonitor.Data
             },
             image: {
                 '$first': '$$ROOT'
+            }
+        }
+    },
+    {
+        $group: {
+            _id: '$image.ImageUrl',
+            image: {
+                '$first': '$image'
+            },
+            totalDistance: {
+                '$first': '$totalDistance'
             }
         }
     },
