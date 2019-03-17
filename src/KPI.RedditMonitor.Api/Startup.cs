@@ -36,6 +36,7 @@ namespace KPI.RedditMonitor.Api
             });
 
             services.AddSingleton<ImagePostsRepository>();
+            services.AddSingleton<TopImageDbAdapter>();
             services.AddSingleton<SimilarityService>();
 
             services.AddSwaggerGen(c =>
