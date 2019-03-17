@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace KPI.RedditMonitor.Api.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class SimilarityController : ControllerBase
     {
         private readonly SimilarityService _service;
@@ -21,10 +21,9 @@ namespace KPI.RedditMonitor.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<List<ImagePost>>> GetSimilar()
+        public async Task<ActionResult<List<ImagePost>>> GetSimilar(IFormFile file)
         {
-            var file = HttpContext.Request.Form.Files.First().OpenReadStream();
-            return await _service.Find(file);
+            return await _service.Find(file.OpenReadStream());
         }
     }
 }
