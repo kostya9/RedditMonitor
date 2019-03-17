@@ -12,7 +12,7 @@
 
       <div>
         <div v-for="a in images" :key="a.id">
-          <a :href="a.url">Link</a>
+          <a :href="'https://reddit.com/' +a.url">Link</a>
           <img :src="a.imageUrl"  class="similar-img"/>
         </div>
         </div>
@@ -35,14 +35,9 @@ export default {
     filesChange(n, f) {
       const formData = new FormData();
       formData.append('file',f[0]);
-      const config = {
-        headers: {
-            'content-type': 'multipart/form-data'
-        }
-      };
       const prod = 'https://21hqpr8rr3.execute-api.eu-west-1.amazonaws.com/Prod/Similarity';
       const local = 'http://localhost:64619/Similarity';
-      axios.post(local, formData, config)
+      axios.post(local, formData)
         .then(d => {
           this.images = d.data;
         });

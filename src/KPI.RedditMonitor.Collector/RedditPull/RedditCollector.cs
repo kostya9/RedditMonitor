@@ -23,8 +23,8 @@ namespace KPI.RedditMonitor.Collector.RedditPull
         public async Task SubscribeOnEntries(Action<RedditPost> callback, CancellationToken cancellationToken)
         {
             while (!cancellationToken.IsCancellationRequested)
+            using (var source = new CancellationTokenSource(TimeSpan.FromHours(112)))
             {
-                var source = new CancellationTokenSource(TimeSpan.FromHours(1));
 
                 cancellationToken.Register(() => source.Cancel());
                 var webAgent = new BotWebAgent(_options.Username, _options.Password, _options.ClientId,

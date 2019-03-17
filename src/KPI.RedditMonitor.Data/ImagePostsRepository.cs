@@ -76,7 +76,6 @@ namespace KPI.RedditMonitor.Data
     {
         $addFields: {
             diff: {
-                $divide: [{
                     $pow: [{
                         $subtract: [{
                             $arrayElemAt: ['$allFeatures', 0]
@@ -84,9 +83,6 @@ namespace KPI.RedditMonitor.Data
                             $arrayElemAt: ['$allFeatures', 1]
                         }]
                     }, 2]
-                }, {
-                    $arrayElemAt: ['$allFeatures', 0]
-                }]
             }
         }
     },
@@ -113,7 +109,10 @@ namespace KPI.RedditMonitor.Data
 ";
             var pipelines = BsonSerializer.Deserialize<BsonDocument[]>(query).ToList();
 
-            using (var result = await _collection.AggregateAsync<AggregateResult>(pipelines))
+            using (var result = await _collection.AggregateAsync<AggregateResult>(pipelines, new AggregateOptions()
+            {
+                AllowDiskUse = true
+            }))
             {
                 await result.MoveNextAsync();
                 return result.Current.Select(c => c.image).ToList();

@@ -23,7 +23,8 @@ namespace KPI.RedditMonitor.Api.Controllers
         [HttpPost]
         public async Task<ActionResult<List<ImagePost>>> GetSimilar()
         {
-            return await _service.Find(HttpContext.Request.Form.Files.First().OpenReadStream());
+            var file = HttpContext.Request.Form.Files.First().OpenReadStream();
+            return await _service.Find(file);
         }
     }
 }
