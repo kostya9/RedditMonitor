@@ -59,7 +59,6 @@ namespace KPI.RedditMonitor.Collector.RedditPull
                         catch (Exception e)
                         {
                             _log.LogError(e, "An error occurred during post enqueueing");
-                            throw;
                         }
                     }
                     catch (OperationCanceledException)

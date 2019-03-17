@@ -1,22 +1,32 @@
 <template>
   <div id="app">
     <div class="container">
-      <!--UPLOAD-->
-      <form enctype="multipart/form-data">
-        <h1>Find similiar</h1>
-        <div class="dropbox">
-          <input type="file" @change="filesChange($event.target.name, $event.target.files);"
-            accept="image/*" class="input-file">
+        <h1 class="uk-header-primary">
+            Find Similar Images
+        </h1>
+        <div class="uk-margin">
+            <div uk-form-custom>
+                <input type="file" accept="image/*" @change="filesChange($event.target.name, $event.target.files);">
+                <button class="uk-button uk-button-default" type="button" tabindex="-1">Select image</button>
+            </div>
         </div>
-      </form>
 
-      <div>
-        <div v-for="a in images" :key="a.id">
-          <a :href="'https://reddit.com/' +a.url">Link</a>
-          <img :src="a.imageUrl"  class="similar-img"/>
+        <div uk-grid class="uk-grid-divider">
+            <div class="uk-card uk-card-default uk-card-hover uk-width-1-4 uk-width-small-1-1" v-for="(image, index) in images" :key="index">
+                <div class="uk-card-header">
+                    <img :src="image.imageUrl">
+                </div>
+                <div class="uk-card-footer">
+                    <a class="uk-button uk-button-secondary uk-margin-right" target='_blank' :href="image.imageUrl">
+                        Image
+                    </a>
+                    <a class="uk-button uk-button-secondary" target='_blank' :href="`https://reddit.com${image.url}`">
+                        Post
+                    </a>
+                </div>
+            </div>
         </div>
-        </div>
-      </div>
+    </div>
   </div>
 </template>
 

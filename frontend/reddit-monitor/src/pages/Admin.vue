@@ -11,8 +11,14 @@
             </div>
             <div class="uk-card uk-padding-large">
                 <h1 class="uk-heading-primary">{{imageStats.images}} in {{imageStats.seconds}}s</h1>
-                <span class="uk-text-lead">Images were found by RedditCollector</span>
+                <div class="uk-text-lead">Images were found by RedditCollector</div>
+                <div class="uk-text-meta">Last updated at {{lastUpdatedAt}}</div>
             </div>
+        </div>
+        <div class="uk-text-center">
+            <h1 class="uk-heading-primary">
+                Top images by their url
+            </h1>
         </div>
         <div uk-grid class="uk-gird-match uk-grid-divider">
             <top-image v-for="(item, index) in images" :image="item" :key="index" @ignore="() => ignore(item)" :showingIgnored="showingIgnored"> </top-image>
@@ -22,7 +28,6 @@
 
 <script>
 import axios from 'axios';
-
 import BaseUrl from './../BaseUrl.js'
 import TopImage from './../components/Admin/TopImage.vue'
 
@@ -37,7 +42,7 @@ export default {
             total: 0,
             ignored: 0,
             showingIgnored: false,
-            imageStats: {images: 0, seconds: 0}
+            imageStats: {images: 0, seconds: 0, lastUpdated: null}
         }
     },
     created() {
@@ -96,5 +101,15 @@ export default {
                 });
         }
     },
+    computed: {
+        lastUpdatedAt() { 
+            if(!this.imageStats.lastUpdated) {
+                return 'never';
+            }
+
+            const date = new Date(this.imageStats.lastUpdated + 'Z');
+            return `${date.toDateString()} ${date.toTimeString()}`
+        }
+    }
 }
 </script>
