@@ -1,6 +1,7 @@
 server {
     listen 80 default_server;
     server_name {{inventory_hostname}} reddit.knine.xyz;
+    client_max_body_size 5M;
 
     location /api {
         proxy_pass http://127.0.0.1:5000;
