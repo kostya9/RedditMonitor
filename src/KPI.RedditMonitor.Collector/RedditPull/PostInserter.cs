@@ -16,17 +16,19 @@ namespace KPI.RedditMonitor.Collector.RedditPull
     public class PostInserter
     {
         private readonly ILogger<PostInserter> _log;
+        private readonly RedditPullStats _stats;
         private readonly ConcurrentQueue<ImagePost> _posts;
         private readonly IAmazonSQS _sqs;
         private readonly IOptions<PostQueueOptions> _options;
         private readonly ImagePostsRepository _repository;
 
-        public PostInserter(IAmazonSQS sqs, IOptions<PostQueueOptions> options, ImagePostsRepository repository, ILogger<PostInserter> log)
+        public PostInserter(IAmazonSQS sqs, IOptions<PostQueueOptions> options, ImagePostsRepository repository, ILogger<PostInserter> log, RedditPullStats stats)
         {
             _sqs = sqs;
             _options = options;
             _repository = repository;
             _log = log;
+            _stats = stats;
             _posts = new ConcurrentQueue<ImagePost>();
         }
 
@@ -48,14 +50,15 @@ namespace KPI.RedditMonitor.Collector.RedditPull
                         try
                         {
                             await insertTask;
-                            
+
+                            _stats.RegisterBatch(_posts.Count, _options.Value.BatchDelay);
                             _log.LogInformation(
                                 $"[STATS]: Received {_posts.Count} images with posts in {_options.Value.BatchDelay} seconds");
                             await Task.WhenAll(BatchPosts().Select(b => SendMessages(b, cancellationToken)));
                         }
                         catch (Exception e)
                         {
-                            _log.LogError(e, "An error occurred during post inserting");
+                            _log.LogError(e, "An error occurred during post enqueueing");
                             throw;
                         }
                     }

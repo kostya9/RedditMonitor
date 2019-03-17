@@ -16,7 +16,14 @@ namespace KPI.RedditMonitor.Api
 
         public static IWebHost BuildWebHost(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
-                .ConfigureAppConfiguration(builder => builder.AddJsonFile("appsettings.Development.json", true).AddEnvironmentVariables())
+                .ConfigureAppConfiguration(builder => 
+                {
+                    builder
+                        .AddJsonFile("appsettings.Development.json", true)
+                        .AddJsonFile("appsettings.Production.json", true)
+                        .AddEnvironmentVariables();
+
+                })
                 .UseStartup<Startup>()
                 .Build();
     }

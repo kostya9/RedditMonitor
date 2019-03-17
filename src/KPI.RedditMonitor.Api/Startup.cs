@@ -1,5 +1,7 @@
 using System;
+using Amazon.SQS;
 using KPI.RedditMonitor.Application.Similarity;
+using KPI.RedditMonitor.Collector.RedditPull;
 using KPI.RedditMonitor.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -26,6 +28,19 @@ namespace KPI.RedditMonitor.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.Configure<MongoDbConfig>(c => Configuration.Bind("MongoDb", c));
+            services.Configure<RedditOptions>(o => Configuration.Bind("Reddit", o));
+            services.Configure<PostQueueOptions>(o => Configuration.Bind("PostQueue", o));
+
+            services.AddSingleton<ImagePostsRepository>();
+            services.AddSingleton<RedditCollector>();
+            services.AddSingleton<PostInserter>();
+
+            services.AddAWSService<IAmazonSQS>();
+
+            if (Configuration.GetValue<bool>("RedditCollector:Run"))
+            {
+                services.AddHostedService<RedditCollectorService>();
+            }
 
             services.AddSingleton<IMongoClient>(p =>
             {
