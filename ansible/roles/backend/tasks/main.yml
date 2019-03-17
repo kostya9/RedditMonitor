@@ -1,4 +1,4 @@
-- include: install-dotnet.yml
+- include_tasks: install-dotnet.yml
 
 - name: Package NetCore bundle
   run_once: true
