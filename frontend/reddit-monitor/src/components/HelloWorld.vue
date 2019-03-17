@@ -35,9 +35,9 @@ export default {
     filesChange(n, f) {
       const formData = new FormData();
       formData.append('file',f[0]);
-      const prod = 'https://21hqpr8rr3.execute-api.eu-west-1.amazonaws.com/Prod/Similarity';
-      const local = 'http://localhost:64619/Similarity';
-      axios.post(local, formData)
+      const basePath = '';
+      //const basePath = 'http://localhost:64619';
+      axios.post(`${basePath}/api/Similarity`, formData)
         .then(d => {
           this.images = d.data;
         });

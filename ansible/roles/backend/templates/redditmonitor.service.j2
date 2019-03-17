@@ -7,6 +7,7 @@ Type=simple
 User=ubuntu
 Restart=always
 RestartSec=3
+Environment=MongoDb__ConnectionString={{mongo_url}}
 
 [Install]
 WantedBy=multi-user.target
