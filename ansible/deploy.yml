@@ -1,5 +1,11 @@
 ---
-- hosts: all
+- name: install python
+  hosts: all
+  pre_tasks:
+  - raw: sudo apt-get -y install python-simplejson
+  gather_facts: false
+- name: deploy
+  hosts: all
   pre_tasks:
   - raw: sudo apt-get -y install python-simplejson
   remote_user: ubuntu
