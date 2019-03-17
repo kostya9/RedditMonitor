@@ -1,0 +1,30 @@
+
+- name: Make sure HTTPS is supported by apt
+  become: True
+  become_method: sudo
+  apt:
+    name: apt-transport-https
+    state: present
+    update_cache: yes
+
+- name: Import Microsoft APT key
+  become: True
+  become_method: sudo
+  apt_key:
+    url: "https://packages.microsoft.com/keys/microsoft.asc"
+    state: present
+  
+- name: Add repo for Ubuntu Bionic
+  become: True
+  become_method: sudo
+  apt_repository:
+    repo: deb [arch=amd64] https://packages.microsoft.com/repos/microsoft-ubuntu-bionic-prod bionic main
+    filename: "dotnetdev"
+    state: present
+    update_cache: yes
+
+- name: install ASP.Net Core runtime
+  become: True
+  become_method: sudo
+  package:
+    name: "aspnetcore-runtime-2.2"

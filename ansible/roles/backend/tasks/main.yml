@@ -2,6 +2,7 @@
   run_once: true
   local_action: command chdir=.. dotnet publish -c Release
 - name: Copy NetCore bundle to target
-  copy:
-    src: ../src/KPI.RedditMonitor/Release/netcore2.2/publish
+  synchronize:
+    src: ../src/KPI.RedditMonitor.Api/bin/Release/netcoreapp2.2/publish
     dest: /home/ubuntu/redditmonitor
+- include_tasks: install-dotnet.yml
