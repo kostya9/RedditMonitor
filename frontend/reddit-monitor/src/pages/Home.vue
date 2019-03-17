@@ -22,6 +22,7 @@
 
 <script>
 import axios from 'axios';
+import BaseUrl from './../BaseUrl.js'
 export default {
   name: 'HelloWorld',
   props: {
@@ -35,9 +36,8 @@ export default {
     filesChange(n, f) {
       const formData = new FormData();
       formData.append('file',f[0]);
-      const prod = 'https://21hqpr8rr3.execute-api.eu-west-1.amazonaws.com/Prod/Similarity';
-      const local = 'http://localhost:64619/Similarity';
-      axios.post(local, formData)
+      const basePath = BaseUrl.Value;
+      axios.post(`${basePath}/api/Similarity`, formData)
         .then(d => {
           this.images = d.data;
         });
@@ -66,5 +66,17 @@ a {
 .similar-img {
   height: 200px;
   margin: 50px;
+}
+</style>
+
+
+<style>
+#app {
+  font-family: "Avenir", Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+  margin-top: 60px;
 }
 </style>

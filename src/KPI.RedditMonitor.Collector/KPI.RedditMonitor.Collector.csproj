@@ -1,7 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp2.2</TargetFramework>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
@@ -22,12 +21,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\KPI.RedditMonitor.Data\KPI.RedditMonitor.Data.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="appsettings.Development.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
 
 </Project>
