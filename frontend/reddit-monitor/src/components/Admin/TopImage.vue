@@ -1,5 +1,5 @@
 <template>
-        <div class="uk-card uk-card-default uk-card-hover uk-width-1-4">
+    <div class="uk-card uk-card-default uk-card-hover uk-width-1-4 uk-width-small-1-1">
         <div class="uk-card-header">
             <img :src="image.url">
         </div>
