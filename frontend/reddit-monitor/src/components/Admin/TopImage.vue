@@ -17,12 +17,11 @@
             </div>
         </div>
         <div class="uk-card-footer">
-            <button class="uk-button uk-button-secondary">
+            <a class="uk-button uk-button-secondary" target='_blank' :href="image.url">
                 Go To Image
-            </button>
-
-            <button class="uk-button uk-button-danger">
-                Ignore
+            </a>
+            <button class="uk-button uk-button-danger" @click="() => $emit('ignore', !showingIgnored)">
+                {{showingIgnored ? 'Unignore' : 'Ignore'}}
             </button>
         </div>
     </div>
@@ -31,7 +30,7 @@
 <script>
 export default {
     name: 'top-image',
-    props: ['image'],
+    props: ['image', 'showingIgnored'],
     data() {
         return {
             areLinksOpen: false
