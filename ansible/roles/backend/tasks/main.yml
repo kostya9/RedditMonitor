@@ -7,7 +7,7 @@
 - name: Copy NetCore bundle to target
   synchronize:
     src: ../src/KPI.RedditMonitor.Api/bin/Release/netcoreapp2.2/publish/
-    dest: /home/ubuntu/redditmonitor/
+    dest: /home/ubuntu/redditmonitor/backend/
 
 - name: Copy systemd service file
   become: true

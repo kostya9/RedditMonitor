@@ -1,0 +1,12 @@
+- name: Install NPM dependencies
+  run_once: true
+  local_action: command chdir=../frontend/reddit-monitor npm install
+
+- name: package FrontEnd
+  run_once: true
+  local_action: command chdir=../frontend/reddit-monitor npm run build
+
+- name: Copy frontend bundle to target
+  synchronize:
+    src: ../frontend/reddit-monitor/dist/
+    dest: /home/ubuntu/redditmonitor/frontend/

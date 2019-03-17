@@ -1,0 +1,30 @@
+- name: Install NGinx
+  become: True
+  apt:
+    name: nginx
+    state: latest
+
+- name: Disable default site
+  become: True
+  file:
+    path: '/etc/nginx/sites-enabled/default'
+    state: absent
+
+- name: Add site config for reddit-monitor
+  become: True
+  template:
+    src: 'redditmonitor_site.conf.j2'
+    dest: '/etc/nginx/sites-available/redditmonitor_site.conf'
+
+- name: Enable site config for reddit-monitor
+  become: True
+  file:
+    src: '/etc/nginx/sites-available/redditmonitor_site.conf'
+    dest: '/etc/nginx/sites-enabled/redditmonitor_site.conf'
+    state: link
+
+- name: Restart NGinx
+  become: True
+  service:
+      name: nginx
+      state: reloaded
