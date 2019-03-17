@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson.Serialization.Conventions;
 using MongoDB.Driver;
+using Swashbuckle.AspNetCore.Swagger;
 
 namespace KPI.RedditMonitor.Api
 {
@@ -37,9 +38,14 @@ namespace KPI.RedditMonitor.Api
             services.AddSingleton<ImagePostsRepository>();
             services.AddSingleton<SimilarityService>();
 
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new Info { Title = "RedditMonitor API", Version = "v1" });
+            });
+
             services.AddCors();
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline
@@ -52,6 +58,12 @@ namespace KPI.RedditMonitor.Api
                     .AllowAnyHeader()
                     .AllowAnyMethod()
                     .SetPreflightMaxAge(TimeSpan.FromMinutes(10));
+            });
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
             });
 
             if (env.IsDevelopment())
