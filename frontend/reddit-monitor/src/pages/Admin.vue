@@ -19,6 +19,7 @@
 <script>
 import axios from 'axios';
 
+import BaseUrl from './../BaseUrl.js'
 import TopImage from './../components/Admin/TopImage.vue'
 
 export default {
@@ -35,8 +36,7 @@ export default {
         }
     },
     mounted() {
-        const basePath = '';
-        //const basePath = 'http://localhost:64621';
+        const basePath = BaseUrl.Value;
         axios.get(`${basePath}/api/TopImages?ignored=${this.showingIgnored}`)
             .then((d) => {
                 const {images, total, ignored} = d.data;
@@ -50,8 +50,7 @@ export default {
             item.open = !item.open;
         },
         ignore(item) {
-            //const basePath = 'http://localhost:64621';
-            const basePath = '';
+            const basePath = BaseUrl.Value;
             axios.post(`${basePath}/api/TopImages/ignore`, {value: !this.showingIgnored, imageUrl: item.url})
                 .then(() => axios.get(`${basePath}/api/TopImages?ignored=${this.showingIgnored}`))
                 .then((d) => {
@@ -70,8 +69,7 @@ export default {
             this.reload();
         },
         reload() {
-            const basePath = '';
-            //const basePath = 'http://localhost:64621';
+            const basePath = BaseUrl.Value;
             axios.get(`${basePath}/api/TopImages?ignored=${this.showingIgnored}`)
                 .then((d) => {
                     const {images, total, ignored} = d.data;
