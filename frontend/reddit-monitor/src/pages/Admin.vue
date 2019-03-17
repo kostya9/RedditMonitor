@@ -9,6 +9,10 @@
                 <h1 class="uk-heading-primary">{{ignored}}</h1>
                 <a class="uk-text-lead uk-link" @click="() => showIgnored()">Ignored images {{showingIgnored ? '(showing)' : ''}}</a>
             </div>
+            <div class="uk-card uk-padding-large">
+                <h1 class="uk-heading-primary">{{imageStats.images}} in {{imageStats.seconds}}s</h1>
+                <span class="uk-text-lead">Images were found by RedditCollector</span>
+            </div>
         </div>
         <div uk-grid class="uk-gird-match uk-grid-divider">
             <top-image v-for="(item, index) in images" :image="item" :key="index" @ignore="() => ignore(item)" :showingIgnored="showingIgnored"> </top-image>
@@ -32,7 +36,8 @@ export default {
             images: [],
             total: 0,
             ignored: 0,
-            showingIgnored: false
+            showingIgnored: false,
+            imageStats: {images: 0, seconds: 0}
         }
     },
     mounted() {
@@ -44,6 +49,14 @@ export default {
                 this.total = total;
                 this.ignored = ignored;
             });
+    },
+    created() {
+        setInterval(() => {
+            axios.get(`${BaseUrl.Value}/api/RedditPullStats`)
+                .then(d => {
+                    this.imageStats = d.data;
+                })
+        }, 35 * 1000);
     },
     methods: {
         clickComments(item) {
