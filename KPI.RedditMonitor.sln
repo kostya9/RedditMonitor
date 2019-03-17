@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26124.0
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28705.295
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{E9388107-731D-400D-8BB5-5111BBCCAB95}"
 EndProject
@@ -20,9 +20,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KPI.RedditMonitor.ImageProc
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{F03FCD9F-576B-4CF5-976E-99D974CA6C44}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KPI.RedditMonitor.Tests", "test\KPI.RedditMonitor.Tests\KPI.RedditMonitor.Tests.csproj", "{114F51F8-0E01-47C4-B8AE-8C5CF043868A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KPI.RedditMonitor.Tests", "test\KPI.RedditMonitor.Tests\KPI.RedditMonitor.Tests.csproj", "{114F51F8-0E01-47C4-B8AE-8C5CF043868A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KPI.RedditMonitor.Application", "src\KPI.RedditMonitor.Application\KPI.RedditMonitor.Application.csproj", "{ECD50548-2261-4D37-9F97-61FBC3AEE3CA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KPI.RedditMonitor.Application", "src\KPI.RedditMonitor.Application\KPI.RedditMonitor.Application.csproj", "{ECD50548-2261-4D37-9F97-61FBC3AEE3CA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

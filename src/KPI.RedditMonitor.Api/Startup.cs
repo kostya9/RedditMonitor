@@ -1,3 +1,4 @@
+using System;
 using KPI.RedditMonitor.Application.Similarity;
 using KPI.RedditMonitor.Data;
 using Microsoft.AspNetCore.Builder;
@@ -36,6 +37,7 @@ namespace KPI.RedditMonitor.Api
             services.AddSingleton<ImagePostsRepository>();
             services.AddSingleton<SimilarityService>();
 
+            services.AddCors();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
@@ -43,6 +45,15 @@ namespace KPI.RedditMonitor.Api
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            app.UseCors(b =>
+            {
+                b.WithOrigins("http://localhost:8080")
+                    .AllowCredentials()
+                    .AllowAnyHeader()
+                    .AllowAnyMethod()
+                    .SetPreflightMaxAge(TimeSpan.FromMinutes(10));
+            });
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -52,7 +63,6 @@ namespace KPI.RedditMonitor.Api
                 app.UseHsts();
             }
 
-            app.UseCors(b => { b.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:8080"); });
             app.UseHttpsRedirection();
             app.UseMvc();
         }
