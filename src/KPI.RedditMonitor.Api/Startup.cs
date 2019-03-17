@@ -34,6 +34,7 @@ namespace KPI.RedditMonitor.Api
             services.AddSingleton<ImagePostsRepository>();
             services.AddSingleton<RedditCollector>();
             services.AddSingleton<PostInserter>();
+            services.AddSingleton<RedditPullStats>();
 
             services.AddAWSService<IAmazonSQS>();
 
