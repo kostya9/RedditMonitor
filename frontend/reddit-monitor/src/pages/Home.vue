@@ -35,8 +35,8 @@ export default {
     filesChange(n, f) {
       const formData = new FormData();
       formData.append('file',f[0]);
-      const basePath = '';
-      //const basePath = 'http://localhost:64619';
+      //const basePath = '';
+      const basePath = 'http://localhost:64621';
       axios.post(`${basePath}/api/Similarity`, formData)
         .then(d => {
           this.images = d.data;
@@ -66,5 +66,17 @@ a {
 .similar-img {
   height: 200px;
   margin: 50px;
+}
+</style>
+
+
+<style>
+#app {
+  font-family: "Avenir", Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+  margin-top: 60px;
 }
 </style>
