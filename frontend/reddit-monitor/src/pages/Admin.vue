@@ -107,8 +107,8 @@ export default {
                 return 'never';
             }
 
-            const date = new Date(this.imageStats.lastUpdated + 'Z');
-            return `${date.toDateString()} ${date.toTimeString()}`
+            const date = new Date(this.imageStats.lastUpdated);
+            return date.toLocaleString();
         }
     }
 }
