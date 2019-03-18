@@ -47,6 +47,7 @@ export default {
       const formData = new FormData();
       formData.append('file',f[0]);
       const basePath = BaseUrl.Value;
+      this.images = [];
       axios.post(`${basePath}/api/Similarity`, formData)
         .then(d => {
           this.images = d.data;
