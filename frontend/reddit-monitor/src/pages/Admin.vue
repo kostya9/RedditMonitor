@@ -108,7 +108,7 @@ export default {
             }
 
             const date = new Date(this.imageStats.lastUpdated);
-            return `${date.toDateString()} ${date.toTimeString()}`
+            return date.toLocaleString();
         }
     }
 }
