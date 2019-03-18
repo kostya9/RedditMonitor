@@ -2,10 +2,11 @@
 
 # For some reason sometimes NuGet restore fails due to missing folder in caches
 - name: Package NetCore bundle
-  retries: 3
-  delay: 3
   run_once: true
   local_action: command chdir=.. dotnet publish -c Release
+  retries: 3
+  delay: 3
+  register: result
   until: result.rc == 0
 
 - name: Create folder
