@@ -84,10 +84,12 @@ export default {
         },
         showIgnored() {
             this.showingIgnored = true;
+            this.images = [];
             this.reload();
         },
         notShowIgnored() {
             this.showingIgnored = false;
+            this.images = [];
             this.reload();
         },
         reload() {
