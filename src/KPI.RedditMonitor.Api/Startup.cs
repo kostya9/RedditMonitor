@@ -2,6 +2,7 @@ using System;
 using Amazon.SQS;
 using KPI.RedditMonitor.Application.Similarity;
 using KPI.RedditMonitor.Collector.RedditPull;
+using KPI.RedditMonitor.Collector.RedditPull.Collectors;
 using KPI.RedditMonitor.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -32,7 +33,7 @@ namespace KPI.RedditMonitor.Api
             services.Configure<PostQueueOptions>(o => Configuration.Bind("PostQueue", o));
 
             services.AddSingleton<ImagePostsRepository>();
-            services.AddSingleton<RedditCollector>();
+            services.AddSingleton<IRedditCollector, RedditNetCollector>();
             services.AddSingleton<PostInserter>();
             services.AddSingleton<RedditPullStats>();
 

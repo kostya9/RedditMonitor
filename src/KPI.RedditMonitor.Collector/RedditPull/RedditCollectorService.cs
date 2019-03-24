@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using KPI.RedditMonitor.Collector.RedditPull.Collectors;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
@@ -8,11 +9,11 @@ namespace KPI.RedditMonitor.Collector.RedditPull
 {
     public class RedditCollectorService : BackgroundService
     {
-        private readonly RedditCollector _collector;
+        private readonly IRedditCollector _collector;
         private readonly PostInserter _inserter;
         private readonly ILogger<RedditCollectorService> _log;
 
-        public RedditCollectorService(PostInserter inserter, RedditCollector collector,
+        public RedditCollectorService(PostInserter inserter, IRedditCollector collector,
             ILogger<RedditCollectorService> log)
         {
             _inserter = inserter;
