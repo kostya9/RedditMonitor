@@ -16,7 +16,6 @@
     <PackageReference Include="Microsoft.Extensions.Logging" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="2.2.0" />
     <PackageReference Include="Reddit" Version="1.1.1" />
-    <PackageReference Include="Reddit.AuthTokenRetrieverLib" Version="1.1.1" />
     <PackageReference Include="RedditSharp" Version="2.0.0-CI00068" />
     <PackageReference Include="System.Interactive.Async" Version="3.2.0" />
   </ItemGroup>
