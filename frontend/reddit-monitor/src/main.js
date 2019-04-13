@@ -5,6 +5,12 @@ import VueRouter from 'vue-router';
 import Home from "./pages/Home.vue";
 import Admin from "./pages/Admin.vue";
 
+import Vuikit from 'vuikit'
+import VuikitIcons from '@vuikit/icons'
+
+//import '@vuikit/theme'
+
+
 const routes = [
   {path: '/', component: Home},
   {path: '/admin', component: Admin},
@@ -14,6 +20,9 @@ const router = new VueRouter({
   routes // short for `routes: routes`
 });
 
+
+Vue.use(Vuikit)
+Vue.use(VuikitIcons)
 Vue.use(VueRouter);
 
 Vue.config.productionTip = false

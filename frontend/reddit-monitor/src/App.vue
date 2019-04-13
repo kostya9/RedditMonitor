@@ -1,4 +1,6 @@
 <template>
+  <Landing></Landing>
+  <!--
   <div class="uk-container uk-container-expand">
     <nav class="uk-navbar-container" uk-navbar>
       <div class="uk-navbar-left">
@@ -13,23 +15,25 @@
       </div>
     </nav>
     <router-view></router-view>
-  </div>
+  </div>-->
 </template>
 
 <script>
-import UIkit from "uikit";
-import Icons from "uikit/dist/js/uikit-icons";
-UIkit.use(Icons);
+import Landing from './pages/Landing'
 
 
 export default {
-  name: "app"
+  name: "app",
+  components: {
+    Landing
+  },
 };
 </script>
 
 <style lang="scss">
 // 1. Your custom variables and variable overwrites.
-$global-link-color: #DA7D02;
+
+$global-primary-background: #f7b243;
 
 // 2. Import default variables and available mixins.
 @import "uikit/src/scss/variables-theme.scss";
