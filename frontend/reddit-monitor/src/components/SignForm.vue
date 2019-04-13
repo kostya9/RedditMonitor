@@ -23,31 +23,31 @@
             <form class="uk-form-horizontal">
 
                 <div class="uk-margin">
-                    <label class="uk-form-label" for="form-horizontal-text">Login</label>
+                    <label class="uk-form-label" for="username">Username</label>
                     <div class="uk-form-controls">
-                        <input class="uk-input" id="form-horizontal-text" type="text" placeholder="Login">
+                        <input class="uk-input" id="username" type="text" placeholder="Username">
                     </div>
                 </div>
 
                 <div class="uk-margin">
-                    <label class="uk-form-label" for="form-horizontal-text">Email address</label>
+                    <label class="uk-form-label" for="email">Email address</label>
                     <div class="uk-form-controls">
-                        <input class="uk-input" id="form-horizontal-text" type="text" placeholder="you@company.com">
+                        <input class="uk-input" id="email" type="text" placeholder="you@company.com">
                     </div>
                 </div>
 
 
                 <div class="uk-margin">
-                    <label class="uk-form-label" for="form-horizontal-text">Password</label>
+                    <label class="uk-form-label" for="pwd">Password</label>
                     <div class="uk-form-controls">
-                        <input class="uk-input" id="form-horizontal-text" type="password" placeholder="Password">
+                        <input class="uk-input" id="pwd" type="password" placeholder="Password">
                     </div>
                 </div>
 
                 <div class="uk-margin">
-                    <label class="uk-form-label" for="form-horizontal-text">Password confirmation</label>
+                    <label class="uk-form-label" for="confirm">Password confirmation</label>
                     <div class="uk-form-controls">
-                        <input class="uk-input" id="form-horizontal-text" type="password" placeholder="Password">
+                        <input class="uk-input" id="confirm" type="password" placeholder="Password">
                     </div>
                 </div>
 

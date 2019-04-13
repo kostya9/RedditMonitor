@@ -1,5 +1,8 @@
 using System;
+using Amazon;
+using Amazon.CognitoIdentityProvider;
 using Amazon.SQS;
+using KPI.RedditMonitor.Api.Config;
 using KPI.RedditMonitor.Application.Similarity;
 using KPI.RedditMonitor.Collector.RedditPull;
 using KPI.RedditMonitor.Collector.RedditPull.Collectors;
@@ -31,6 +34,21 @@ namespace KPI.RedditMonitor.Api
             services.Configure<MongoDbConfig>(c => Configuration.Bind("MongoDb", c));
             services.Configure<RedditOptions>(o => Configuration.Bind("Reddit", o));
             services.Configure<PostQueueOptions>(o => Configuration.Bind("PostQueue", o));
+            services.Configure<CognitoOptions>(o => Configuration.Bind("AWS:Cognito", o));
+
+            var cognitoOptions = Configuration.GetSection("AWS:Cognito").Get<CognitoOptions>();
+            var region = Configuration["AWS:Region"];
+            services.AddAuthentication("Bearer")
+                .AddJwtBearer(options =>
+                {
+                    options.Authority = $"https://cognito-idp.{region}.amazonaws.com/{cognitoOptions.UserPoolId}";
+                    options.TokenValidationParameters.ValidateAudience = false;
+                });
+
+            services.AddSingleton<IAmazonCognitoIdentityProvider>((p) =>
+            {
+                return new AmazonCognitoIdentityProviderClient(RegionEndpoint.GetBySystemName(region));
+            });
 
             services.AddSingleton<ImagePostsRepository>();
             services.AddSingleton<IRedditCollector, RedditNetCollector>();
@@ -92,6 +110,8 @@ namespace KPI.RedditMonitor.Api
             {
                 app.UseHsts();
             }
+
+            app.UseAuthentication();
 
             app.UseHttpsRedirection();
             app.UseMvc();
