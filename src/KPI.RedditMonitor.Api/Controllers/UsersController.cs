@@ -60,8 +60,13 @@ namespace KPI.RedditMonitor.Api.Controllers
             }
             catch(UserNotFoundException e)
             {
-                _log.LogInformation(e, $"User ${request.Username} does not exist");
-                return NotFound();
+                _log.LogInformation(e, $"User #${request.Username} does not exist");
+                return BadRequest("Incorrect username or password");
+            }
+            catch(NotAuthorizedException e)
+            {
+                _log.LogInformation(e, $"User attempted to log in with incorrect password for username #{request.Username}");
+                return BadRequest("Incorrect username or password");
             }
             catch(UserNotConfirmedException e)
             {
