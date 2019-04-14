@@ -1,26 +1,27 @@
 <template>
+    <div>
     <vk-tabs align="center">
         <vk-tabs-item title="Sign In">
-            <div class="signin">
+            <div class="signin" @keyup="(e) => e.keyCode == 13 && signin()">
                 <div class="uk-margin uk-text-center">
                     <div class="uk-inline uk-width-1-2">
                         <span class="uk-form-icon"><vk-icons-user></vk-icons-user></span>
-                        <input class="uk-input" type="text">
+                        <input class="uk-input" type="text" v-model="signinUsername">
                     </div>
                 </div>
                 <div class="uk-margin uk-text-center">
                     <div class="uk-inline uk-width-1-2">
                         <span class="uk-form-icon"><vk-icons-lock></vk-icons-lock></span>
-                        <input class="uk-input" type="password">
+                        <input class="uk-input" type="password" v-model="signinPassword">
                     </div>
                 </div>
                 <div class="uk-margin uk-text-center">
-                    <vk-button type="primary" class="uk-inline uk-width-1-2">LOGIN</vk-button>
+                    <vk-button type="primary" class="uk-inline uk-width-1-2" :disabled="signinDisabled" @click="signin">LOGIN</vk-button>
                 </div>
             </div>
         </vk-tabs-item>
         <vk-tabs-item title="Sign Up">
-            <form class="uk-form-horizontal">
+            <form class="uk-form-horizontal" @keyup="(e) => e.keyCode == 13 && signup()">
 
                 <div class="uk-margin">
                     <label class="uk-form-label" for="username">Username</label>
@@ -58,13 +59,44 @@
             </form>
         </vk-tabs-item>
   </vk-tabs>
+  </div>
 </template>
 
 <script>
+import Axios from 'axios';
+
 export default {
-    data: function (){
+    data: function () {
         return {
-            activeTab: 'signin'
+            signinUsername: "",
+            signinPassword: ""
+        }
+    },
+    methods: {
+        signin() {
+            if (this.signinDisabled)
+                return;
+
+            Axios.post('/api/users/signin', {username: this.signinUsername, password: this.signinPassword})
+                .then((r) => {
+                    this.$auth.signin(r.data.token);
+                })
+                .catch(error => {
+                    // eslint-disable-next-line
+                    console.log(error.response)
+                    this.$notifications.error(error.response.data);
+                });
+        },
+        signup() {
+            // eslint-disable-next-line
+            console.log(2);
+        }
+    },
+    computed: {
+        signinDisabled() {
+            var validUsername = this.signinUsername && this.signinUsername.length;
+            var validPassword = this.signinPassword && this.signinPassword.length;
+            return !(validUsername && validPassword);
         }
     }
 }

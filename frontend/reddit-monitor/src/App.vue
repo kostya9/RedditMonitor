@@ -1,21 +1,23 @@
 <template>
-  <Landing></Landing>
-  <!--
-  <div class="uk-container uk-container-expand">
-    <nav class="uk-navbar-container" uk-navbar>
-      <div class="uk-navbar-left">
-        <div class="uk-navbar-item">
-          <router-link to='/' class="uk-logo">Reddit Monitor</router-link>
+  <div>
+    <vk-notification :messages.sync="messages" position="top-right"></vk-notification>
+    <Landing v-if="!signedin"></Landing>
+    <div class="uk-container uk-container-expand" v-if="signedin">
+      <nav class="uk-navbar-container" uk-navbar>
+        <div class="uk-navbar-left">
+          <div class="uk-navbar-item">
+            <router-link to='/' class="uk-logo">Reddit Monitor</router-link>
+          </div>
         </div>
-      </div>
-      <div class="uk-navbar-right">
-        <div class="uk-navbar-item">
-          <router-link to='/admin' class="uk-button uk-button-default">Admin</router-link>
+        <div class="uk-navbar-right">
+          <div class="uk-navbar-item">
+            <router-link to='/admin' class="uk-button uk-button-default">Admin</router-link>
+          </div>
         </div>
-      </div>
-    </nav>
-    <router-view></router-view>
-  </div>-->
+      </nav>
+      <router-view></router-view>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -24,6 +26,18 @@ import Landing from './pages/Landing'
 
 export default {
   name: "app",
+  data () {
+    return {
+      signedin: false,
+      messages: []
+    }
+  },
+  created() {
+    this.signedin = this.$auth.isSignedin();
+    this.$auth.subscribeSignin(() => this.signedin = true);
+    this.$auth.subscribeSignout(() => this.signedin = false);
+    this.$notifications.onNewNotification((n) => this.messages.push(n));
+  },
   components: {
     Landing
   },

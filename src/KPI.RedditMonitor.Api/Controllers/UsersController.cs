@@ -42,19 +42,32 @@ namespace KPI.RedditMonitor.Api.Controllers
             auth.AuthParameters.Add("USERNAME", request.Username);
             auth.AuthParameters.Add("PASSWORD", request.Password);
 
-            var authResponse = await _cognito.AdminInitiateAuthAsync(auth);
-
-            if (authResponse.AuthenticationResult == null)
+            try
             {
-                _log.LogError("Got response @{response}, error", authResponse);
-                return BadRequest();
+                var authResponse = await _cognito.AdminInitiateAuthAsync(auth);
+
+                if (authResponse.AuthenticationResult == null)
+                {
+                    _log.LogError("Got response @{response}, error", authResponse);
+                    return BadRequest();
+                }
+
+                return new LoginResponse
+                {
+                    Token = authResponse.AuthenticationResult.AccessToken,
+                    ExpiresAt = DateTime.UtcNow.AddSeconds(authResponse.AuthenticationResult.ExpiresIn)
+                };
             }
-
-            return new LoginResponse
+            catch(UserNotFoundException e)
             {
-                Token = authResponse.AuthenticationResult.AccessToken,
-                ExpiresAt = DateTime.UtcNow.AddSeconds(authResponse.AuthenticationResult.ExpiresIn)
-            };
+                _log.LogInformation(e, $"User ${request.Username} does not exist");
+                return NotFound();
+            }
+            catch(UserNotConfirmedException e)
+            {
+                _log.LogInformation(e, $"User #{request.Username} is not confirmed yet");
+                return BadRequest("Please confirm your account (or contact us at webmaster@reddit.knine.xyz)");
+            }
         }
 
         [HttpPost("signup")]
