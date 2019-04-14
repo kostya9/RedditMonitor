@@ -28,13 +28,13 @@ export default class AuthenticationStore extends Vue {
 
     signin(token) {
         this.token = token;
-        localStorage.removeItem(this.tokenKey);
+        localStorage[this.tokenKey] = token;
         this.$emit('signin');
     }
 
     signout() {
         this.token = null;
-        delete localStorage[tokenKey];
+        localStorage.removeItem(this.tokenKey);
         this.$emit('signout');
     }
 

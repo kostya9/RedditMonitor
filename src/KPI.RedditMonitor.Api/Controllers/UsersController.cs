@@ -90,15 +90,28 @@ namespace KPI.RedditMonitor.Api.Controllers
             };
             auth.UserAttributes.Add(emailAttribute);
 
-            var authResponse = await _cognito.SignUpAsync(auth);
-            
-            if(authResponse.HttpStatusCode != System.Net.HttpStatusCode.OK)
+            try
             {
-                _log.LogError("Got response @{response}, error", authResponse);
-                return BadRequest();
-            }
+                var authResponse = await _cognito.SignUpAsync(auth);
 
-            return Ok();
+                if (authResponse.HttpStatusCode != System.Net.HttpStatusCode.OK)
+                {
+                    _log.LogError("Got response @{response}, error", authResponse);
+                    return BadRequest();
+                }
+
+                return Ok();
+            }
+            catch(InvalidPasswordException e)
+            {
+                _log.LogWarning(e, "User attempted to create an account with invalid password");
+                return BadRequest("Please choose a stronger password: with uppercase and lowercase letters, numbers");
+            }
+            catch(UsernameExistsException e)
+            {
+                _log.LogWarning(e, "User tried to create an account with duplicate username");
+                return BadRequest("Please choose another username");
+            }
 
         }
     }
