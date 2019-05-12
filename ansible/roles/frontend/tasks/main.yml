@@ -16,7 +16,7 @@
     exclude: index.html
 
 - name: Force-no-cache on index
-  s3:
+  aws_s3:
     bucket: cf-s3-reddit-monitor
     object: index.html
     src: ../frontend/reddit-monitor/dist/index.html
