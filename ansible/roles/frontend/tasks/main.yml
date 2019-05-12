@@ -13,3 +13,12 @@
     bucket: cf-s3-reddit-monitor
     region: eu-west-1
     permission: public-read
+    exclude: index.html
+
+- name: Force-no-cache on index
+  s3:
+    bucket: cf-s3-reddit-monitor
+    object: index.html
+    src: ../frontend/reddit-monitor/dist/index.html
+    mode: put
+    metadata: 'Cache-Control=no-cache'
