@@ -54,12 +54,11 @@ namespace KPI.RedditMonitor.ImageProcessing
         {
             var maxImageSize = 3 * 1024 * 1024;
             var inserted = 0;
-            var posts = evnt.Records.Select(e => JsonConvert.DeserializeObject<ImagePost>(e.Body));
 
-            foreach (var imagePost in posts)
+            foreach (var record in evnt.Records)
             {
-                using (var response =
-                    await _httpClient.GetAsync(imagePost.ImageUrl, HttpCompletionOption.ResponseHeadersRead))
+                var imagePost = JsonConvert.DeserializeObject<ImagePost>(record.Body);
+                using (var response = await _httpClient.GetAsync(imagePost.ImageUrl, HttpCompletionOption.ResponseHeadersRead))
                 {
                     int length = int.Parse(response.Content.Headers.First(h => h.Key.Equals("Content-Length")).Value
                         .First());
