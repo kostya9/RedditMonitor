@@ -98,7 +98,7 @@ namespace KPI.RedditMonitor.Api
         {
             app.UseCors(b =>
             {
-                b.WithOrigins("http://localhost:8080", "http://localhost:8081")
+                b.WithOrigins("http://localhost:8080", "http://localhost:8081", "http://api.reddit.knine.xyz")
                     .AllowCredentials()
                     .AllowAnyHeader()
                     .AllowAnyMethod()

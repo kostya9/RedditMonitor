@@ -12,6 +12,7 @@
     state: directory
 
 - name: Copy frontend bundle to target
-  synchronize:
+  s3_sync:
     src: ../frontend/reddit-monitor/dist/
-    dest: /home/ubuntu/redditmonitor/frontend/
+    bucket: cf-s3-reddit-monitor
+    file_root: /

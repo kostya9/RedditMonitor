@@ -1,18 +1,14 @@
 server {
     listen 80 default_server;
-    server_name {{inventory_hostname}} reddit.knine.xyz;
+    server_name {{inventory_hostname}} api.reddit.knine.xyz;
     client_max_body_size 5M;
 
-    location /api {
+    location / {
+        set $args api/$args;
         proxy_pass http://127.0.0.1:5000;
     }
 
     location /swagger {
         proxy_pass http://127.0.0.1:5000;
-    }
-
-    location / {
-        root /home/ubuntu/redditmonitor/frontend;
-        index index.html;
     }
 }
