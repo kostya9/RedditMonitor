@@ -60,10 +60,8 @@ namespace KPI.RedditMonitor.ImageProcessing
                 var imagePost = JsonConvert.DeserializeObject<ImagePost>(record.Body);
                 using (var response = await _httpClient.GetAsync(imagePost.ImageUrl, HttpCompletionOption.ResponseHeadersRead))
                 {
-                    int length = int.Parse(response.Content.Headers.First(h => h.Key.Equals("Content-Length")).Value
-                        .First());
-
-                    if (length > maxImageSize)
+                    if (response.Content.Headers.TryGetValues("Content-Length", out var values) 
+                        && values.Any((v) => int.Parse(v) > maxImageSize))
                     {
                         context.Logger.LogLine($"Could not save image {imagePost.ImageUrl} - it was too big");
                         continue;
