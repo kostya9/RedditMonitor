@@ -5,7 +5,7 @@
   shell: chdir=../frontend/reddit-monitor npm run build
 
 - name: Install dateutil for s3 module
-  shell: pip install python-dateutil
+  shell: pip install python-dateutil boto3
 
 - name: Copy frontend bundle to target
   s3_sync:
