@@ -1,0 +1,8 @@
+- name: Install dotnet aws global tool
+  shell: dotnet tool install -g Amazon.Lambda.Tools
+
+- name: Update dotnet aws global tool
+  shell: dotnet tool update -g Amazon.Lambda.Tools
+
+- name: 
+  shell: chdir=../src/KPI.RedditMonitor.ImageProcessing/src/KPI.RedditMonitor.ImageProcessing lambda deploy-function
