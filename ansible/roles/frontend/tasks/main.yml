@@ -11,3 +11,4 @@
   s3_sync:
     file_root: ../frontend/reddit-monitor/dist/
     bucket: cf-s3-reddit-monitor
+    region: eu-west-1
