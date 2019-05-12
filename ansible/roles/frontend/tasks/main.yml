@@ -4,7 +4,7 @@
 - name: package FrontEnd
   shell: chdir=../frontend/reddit-monitor npm run build
 
-- name: Install dateutil for s3 module
+- name: Install dateutil and boto for s3 module
   shell: pip install python-dateutil boto3
 
 - name: Copy frontend bundle to target
