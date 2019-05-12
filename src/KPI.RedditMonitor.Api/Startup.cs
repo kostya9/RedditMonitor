@@ -108,6 +108,7 @@ namespace KPI.RedditMonitor.Api
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
+                c.RoutePrefix = "api/swagger";
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
             });
 
