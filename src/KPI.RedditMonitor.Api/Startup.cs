@@ -62,7 +62,7 @@ namespace KPI.RedditMonitor.Api
 
             if (Configuration.GetValue<bool>("RedditCollector:Run"))
             {
-                // services.AddHostedService<RedditCollectorService>();
+                services.AddHostedService<RedditCollectorService>();
             }
 
             services.AddSingleton<IMongoClient>(p =>
