@@ -6,6 +6,10 @@
   run_once: true
   local_action: command chdir=../frontend/reddit-monitor npm run build
 
+- name: Install dateutil for s3 module
+  run_once: true
+  local_action: pip install python-dateutil
+
 - name: Copy frontend bundle to target
   s3_sync:
     file_root: ../frontend/reddit-monitor/dist/
