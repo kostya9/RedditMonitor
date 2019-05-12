@@ -105,11 +105,11 @@ namespace KPI.RedditMonitor.Api
                     .SetPreflightMaxAge(TimeSpan.FromMinutes(10));
             });
 
-            app.UseSwagger();
+            app.UseSwagger(c => c.RouteTemplate = "/api/swagger/{documentName}/swagger.json");
             app.UseSwaggerUI(c =>
             {
                 c.RoutePrefix = "api/swagger";
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+                c.SwaggerEndpoint("/api/swagger/v1/swagger.json", "My API V1");
             });
 
             if (env.IsDevelopment())
