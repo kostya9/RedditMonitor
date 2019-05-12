@@ -8,7 +8,7 @@
 
 - name: Install dateutil for s3 module
   run_once: true
-  local_action: pip install python-dateutil
+  local_action: command pip install python-dateutil
 
 - name: Copy frontend bundle to target
   s3_sync:
