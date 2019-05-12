@@ -1,3 +1,3 @@
 export default class BaseUrl {
-    static Value = ''
+    static Value = 'http://api.reddit.knine.xyz'
 }

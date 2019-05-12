@@ -6,13 +6,7 @@
   run_once: true
   local_action: command chdir=../frontend/reddit-monitor npm run build
 
-- name: Create folder
-  file:
-    path: /home/ubuntu/redditmonitor
-    state: directory
-
 - name: Copy frontend bundle to target
   s3_sync:
-    src: ../frontend/reddit-monitor/dist/
+    file_root: ../frontend/reddit-monitor/dist/
     bucket: cf-s3-reddit-monitor
-    file_root: /
