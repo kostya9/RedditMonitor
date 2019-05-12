@@ -21,4 +21,5 @@
     object: index.html
     src: ../frontend/reddit-monitor/dist/index.html
     mode: put
+    permission: public-read
     metadata: 'Cache-Control=no-cache'
