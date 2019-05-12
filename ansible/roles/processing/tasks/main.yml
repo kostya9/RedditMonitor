@@ -5,4 +5,4 @@
   shell: dotnet tool update -g Amazon.Lambda.Tools
 
 - name: 
-  shell: chdir=../src/KPI.RedditMonitor.ImageProcessing/src/KPI.RedditMonitor.ImageProcessing lambda deploy-function
+  shell: chdir=../src/KPI.RedditMonitor.ImageProcessing lambda deploy-function
