@@ -10,23 +10,27 @@ namespace KPI.RedditMonitor.Data
 {
     public class ImagePostsRepository
     {
-        private readonly IMongoCollection<ImagePost> _collection;
+        private readonly IMongoClient _client;
 
         public ImagePostsRepository(IMongoClient client)
         {
-            _collection = client
-                .GetDatabase("reddit")
+            _client = client;
+        }
+
+        private IMongoCollection<ImagePost> GetCollection() 
+        {
+            return _client.GetDatabase("reddit")
                 .GetCollection<ImagePost>("posts");
         }
 
         public async Task AddRange(IEnumerable<ImagePost> posts)
         {
-            await _collection.InsertManyAsync(posts);
+            await GetCollection().InsertManyAsync(posts);
         }
 
         public async Task Add(ImagePost imagePost)
         {
-            await _collection.InsertOneAsync(imagePost);
+            await GetCollection().InsertOneAsync(imagePost);
         }
 
         /// <summary>
@@ -127,7 +131,7 @@ namespace KPI.RedditMonitor.Data
 ";
             var pipelines = BsonSerializer.Deserialize<BsonDocument[]>(query).ToList();
 
-            using (var result = await _collection.AggregateAsync<AggregateResult>(pipelines, new AggregateOptions()
+            using (var result = await GetCollection().AggregateAsync<AggregateResult>(pipelines, new AggregateOptions()
             {
                 AllowDiskUse = true
             }))
