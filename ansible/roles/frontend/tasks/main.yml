@@ -1,14 +1,11 @@
 - name: Install NPM dependencies
-  run_once: true
-  local_action: command chdir=../frontend/reddit-monitor npm install
+  shell: chdir=../frontend/reddit-monitor npm install
 
 - name: package FrontEnd
-  run_once: true
-  local_action: command chdir=../frontend/reddit-monitor npm run build
+  shell: chdir=../frontend/reddit-monitor npm run build
 
 - name: Install dateutil for s3 module
-  run_once: true
-  local_action: command pip install python-dateutil
+  shell: pip install python-dateutil
 
 - name: Copy frontend bundle to target
   s3_sync:

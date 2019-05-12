@@ -5,10 +5,16 @@
   - raw: sudo apt-get -y install python-simplejson
   remote_user: ubuntu
   gather_facts: false
-- name: deploy
+
+- name: deploy BE
   hosts: all
   remote_user: ubuntu
   roles:
     - backend
-    - frontend
     - nginx
+
+- name: deploy FE
+  hosts: 127.0.0.1
+  connection: local
+  roles:
+    - frontend
