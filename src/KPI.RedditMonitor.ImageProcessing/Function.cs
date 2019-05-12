@@ -39,7 +39,7 @@ namespace KPI.RedditMonitor.ImageProcessing
 
             _repository = new ImagePostsRepository(mongoClient);
             _httpClient = new HttpClient();
-            Configuration.Default.MemoryAllocator = ArrayPoolMemoryAllocator.CreateWithModeratePooling();
+            // Configuration.Default.MemoryAllocator = ArrayPoolMemoryAllocator.CreateWithModeratePooling();
         }
 
 
