@@ -48,11 +48,13 @@ Axios.interceptors.request.use((c) => {
 })
 
 Axios.interceptors.response.use(undefined, (err) => {
-  if(err.status === 401) {
+  if(err.response.status === 401) {
     store.signout();
+    notifications.error('Your session has expired, please sign in')
   }
-
-  throw err;
+  else {
+    return Promise.reject(error);
+  }
 });
 
 new Vue({
