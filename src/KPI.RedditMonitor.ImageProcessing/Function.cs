@@ -60,6 +60,12 @@ namespace KPI.RedditMonitor.ImageProcessing
                 var imagePost = JsonConvert.DeserializeObject<ImagePost>(record.Body);
                 using (var response = await _httpClient.GetAsync(imagePost.ImageUrl, HttpCompletionOption.ResponseHeadersRead))
                 {
+                    if(!response.IsSuccessStatusCode)
+                    {
+                        context.Logger.LogLine($"StatusCode {response.StatusCode} was not successful while doing request to {imagePost.ImageUrl}, so skipping image");
+                        continue;
+                    }
+
                     if (response.Content.Headers.TryGetValues("Content-Length", out var values) 
                         && values.Any((v) => int.Parse(v) > maxImageSize))
                     {
@@ -86,7 +92,7 @@ namespace KPI.RedditMonitor.ImageProcessing
                 {
                     context.Logger.LogLine($"Could not save {imagePost.ImageUrl}, seems that it was already inserted");
                 }
-                
+                record.   
             }
 
             context.Logger.LogLine($"Inserted {inserted} posts");
