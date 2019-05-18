@@ -92,7 +92,7 @@ namespace KPI.RedditMonitor.ImageProcessing
                 {
                     context.Logger.LogLine($"Could not save {imagePost.ImageUrl}, seems that it was already inserted");
                 }
-                record.   
+
             }
 
             context.Logger.LogLine($"Inserted {inserted} posts");
