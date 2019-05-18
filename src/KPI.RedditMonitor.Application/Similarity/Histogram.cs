@@ -28,9 +28,10 @@ namespace KPI.RedditMonitor.Application.Similarity
             _buckets[GetValueIndex(value)]++;
         }
 
-        public double[] GetBuckets(int totalPixels)
+        public double[] GetBuckets()
         {
-            var normalized = _buckets.Select(b => b / (double)totalPixels).ToArray();
+            var total = _buckets.Sum();
+            var normalized = _buckets.Select(b => b / (double)total).ToArray();
             return normalized;
         }
 

@@ -14,15 +14,15 @@ namespace KPI.RedditMonitor.Application.Similarity
                 var buckets = 4;
                 var minRgb = 0;
                 var maxRgb = 255;
-                histograms.AddHistogram("red", buckets, minRgb, maxRgb);
-                histograms.AddHistogram("green", buckets, minRgb, maxRgb);
-                histograms.AddHistogram("blue", buckets, minRgb, maxRgb);
+                var red = histograms.AddHistogram("red", buckets, minRgb, maxRgb);
+                var green = histograms.AddHistogram("green", buckets, minRgb, maxRgb);
+                var blue = histograms.AddHistogram("blue", buckets, minRgb, maxRgb);
 
                 foreach (var pixel in image.GetPixelSpan())
                 {
-                    histograms.AddPixel("red", pixel.R);
-                    histograms.AddPixel("blue", pixel.B);
-                    histograms.AddPixel("green", pixel.G);
+                    red.Add(pixel.R);
+                    green.Add(pixel.B);
+                    blue.Add(pixel.G);
                 }
             }
 
