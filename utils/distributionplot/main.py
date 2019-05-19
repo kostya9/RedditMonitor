@@ -25,23 +25,23 @@ def show_frequency_plot(axs, frequency_buckets):
     labels = ['0-63', '64-127', '128-191', '192-255']
 
     index = np.arange(len(labels))
-    axs.bar(index, frequency_buckets)
-    axs.set_xlabel('Interval')
-    axs.set_ylabel('Color Frequency')
+    axs.bar(index, frequency_buckets, color = '0.75')
+    axs.set_xlabel('Інтервали')
+    axs.set_ylabel('Кількість пікселів')
     plt.sca(axs)
     plt.xticks(index, labels)
-    plt.title('Distribution of color frequency')
+    plt.title('Розподіл червоного кольору')
 
 def show_normalized_frequency_plot(axs, frequency_buckets):
     labels = ['0-63', '64-127', '128-191', '192-255']
 
     index = np.arange(len(labels))
-    axs.bar(index, frequency_buckets)
-    axs.set_xlabel('Interval')
-    axs.set_ylabel('Color Frequency')
+    axs.bar(index, frequency_buckets, color = '0.75')
+    axs.set_xlabel('Інтервали')
+    axs.set_ylabel('Частота')
     plt.sca(axs)
     plt.xticks(index, labels)
-    plt.title('Normalized Distribution of color frequency')
+    plt.title('Нормалізований розподіл червоного кольору')
 
 def show_color_plot(axs, values_range, dim):
     X = [[v for v in values_range[i * dim : i * dim + dim]] for i in range(dim)]
