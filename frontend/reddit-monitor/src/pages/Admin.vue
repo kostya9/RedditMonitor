@@ -30,6 +30,7 @@
 import axios from 'axios';
 import BaseUrl from './../BaseUrl.js'
 import TopImage from './../components/Admin/TopImage.vue'
+import { clearTimeout } from 'timers';
 
 export default {
     name: 'admin',
@@ -42,7 +43,8 @@ export default {
             total: 0,
             ignored: 0,
             showingIgnored: false,
-            imageStats: {images: 0, seconds: 0, lastUpdated: null}
+            imageStats: {images: 0, seconds: 0, lastUpdated: null},
+            fetchInterval: 0
         }
     },
     created() {
@@ -62,10 +64,13 @@ export default {
         fetchImagesData();
         fetchCollectionData();
 
-        setInterval(() => {
+        this.fetchInterval = setInterval(() => {
             fetchImagesData();
             fetchCollectionData();
         }, 35 * 1000);
+    },
+    destroyed() {
+        clearTimeout(this.fetchInterval);
     },
     methods: {
         clickComments(item) {
