@@ -94,7 +94,7 @@ namespace KPI.RedditMonitor.Data
     {
         $group: {
             _id: '$_id',
-            totalDistance: {
+            intersection: {
                 $sum: '$diff'
             },
             image: {
@@ -108,14 +108,14 @@ namespace KPI.RedditMonitor.Data
             image: {
                 '$first': '$image'
             },
-            totalDistance: {
-                '$first': '$totalDistance'
+            intersection: {
+                '$first': 'intersection'
             }
         }
     },
     {
         $sort: {
-            'totalDistance': 1
+            'intersection': -1
         }
     },
     {
@@ -139,7 +139,7 @@ namespace KPI.RedditMonitor.Data
         {
             public string Id { get; set; }
 
-            public double totalDistance { get; set; }
+            public double intersection { get; set; }
 
             public ImagePost image { get; set; }
         }
