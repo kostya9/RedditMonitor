@@ -34,7 +34,7 @@ namespace KPI.RedditMonitor.Data
         }
 
         /// <summary>
-        /// Algorithm uses Chi-squared distance to compare color histograms SUM((H1 - H2)^2 / H1)
+        /// Algorithm uses Intersection to compare color histograms
         /// </summary>
         /// <param name="features"></param>
         /// <param name="top"></param>
@@ -87,17 +87,7 @@ namespace KPI.RedditMonitor.Data
     {
         $addFields: {
             diff: {
-                $divide: [{
-                        $pow: [{
-                            $subtract: [{
-                                $arrayElemAt: ['$allFeatures', 0]
-                            }, {
-                                $arrayElemAt: ['$allFeatures', 1]
-                            }]
-                        }, 2]}, {
-                        $sum: [{$arrayElemAt: ['$allFeatures', 0]}, {$arrayElemAt: ['$allFeatures', 1]}]
-                    }
-                ]
+                $min: $allFeatures'
             }
         }
     },
