@@ -95,7 +95,7 @@ namespace KPI.RedditMonitor.Data
                                 $arrayElemAt: ['$allFeatures', 1]
                             }]
                         }, 2]}, {
-                        $arrayElemAt: ['$allFeatures', 0]
+                        $sum: [{$arrayElemAt: ['$allFeatures', 0]}, {$arrayElemAt: ['$allFeatures', 1]}]
                     }
                 ]
             }
