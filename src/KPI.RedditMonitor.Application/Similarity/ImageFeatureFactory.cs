@@ -21,8 +21,8 @@ namespace KPI.RedditMonitor.Application.Similarity
                 foreach (var pixel in image.GetPixelSpan())
                 {
                     red.Add(pixel.R);
-                    green.Add(pixel.B);
-                    blue.Add(pixel.G);
+                    green.Add(pixel.G);
+                    blue.Add(pixel.B);
                 }
             }
 
