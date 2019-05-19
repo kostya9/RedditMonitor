@@ -109,7 +109,7 @@ namespace KPI.RedditMonitor.Data
                 '$first': '$image'
             },
             intersection: {
-                '$first': 'intersection'
+                '$first': '$intersection'
             }
         }
     },
