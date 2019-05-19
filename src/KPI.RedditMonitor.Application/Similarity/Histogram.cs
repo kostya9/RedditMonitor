@@ -11,6 +11,8 @@ namespace KPI.RedditMonitor.Application.Similarity
         private readonly double _maxValue;
         private readonly int[] _buckets;
 
+        private readonly double _step;
+
         public Histogram(string name, int buckets, double minValue, double maxValue)
         {
             Name = name;
@@ -18,6 +20,8 @@ namespace KPI.RedditMonitor.Application.Similarity
             _maxValue = maxValue;
 
             _buckets = new int[buckets];
+
+            _step = (_maxValue - _minValue + 1) / _buckets.Length;
         }
 
         public void Add(double value)
@@ -37,9 +41,7 @@ namespace KPI.RedditMonitor.Application.Similarity
 
         private int GetValueIndex(double value)
         {
-            var step = (_maxValue - _minValue + 1) / _buckets.Length;
-            var idx = (int)((value - _minValue) / step);
-            return idx;
+            return (int)((value - _minValue) / _step);
         }
     }
 }
