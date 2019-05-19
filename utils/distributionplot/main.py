@@ -47,7 +47,7 @@ def show_color_plot(axs, values_range, dim):
     X = [[v for v in values_range[i * dim : i * dim + dim]] for i in range(dim)]
 
 
-    axs.imshow(X, cmap='Reds')
+    axs.imshow(X, cmap='Greys')
     axs.axis('off')
 
     axs.spines['left'].set_color('c')
@@ -56,7 +56,7 @@ def show_color_plot(axs, values_range, dim):
     axs.spines['left'].set_linewidth(5)
 
 
-values = [23, 89, 1, 78, 245, 128, 12, 156, 56, 78, 74, 155, 70, 63, 45, 154]
+values = [45, 89, 156, 78, 245, 19, 12, 128, 56, 78, 74, 155, 70, 63, 45, 154]
 
 buckets = get_distribution(values)
 
