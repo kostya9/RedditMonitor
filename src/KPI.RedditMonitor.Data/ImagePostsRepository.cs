@@ -87,7 +87,7 @@ namespace KPI.RedditMonitor.Data
     {
         $addFields: {
             diff: {
-                $min: $allFeatures'
+                $min: '$allFeatures'
             }
         }
     },
