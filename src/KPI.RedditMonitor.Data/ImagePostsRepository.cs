@@ -87,15 +87,16 @@ namespace KPI.RedditMonitor.Data
     {
         $addFields: {
             diff: {
-                $divide: [
-                    $pow: [{
-                        $subtract: [{
-                            $arrayElemAt: ['$allFeatures', 0]
-                        }, {
-                            $arrayElemAt: ['$allFeatures', 1]
-                        }]
-                    }, 2],
-                    $arrayElemAt: ['$allFeatures', 0]
+                $divide: [{
+                        $pow: [{
+                            $subtract: [{
+                                $arrayElemAt: ['$allFeatures', 0]
+                            }, {
+                                $arrayElemAt: ['$allFeatures', 1]
+                            }]
+                        }, 2]}, {
+                        $arrayElemAt: ['$allFeatures', 0]
+                    }
                 ]
             }
         }
