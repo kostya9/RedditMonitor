@@ -44,6 +44,9 @@ export default {
   },
   methods: {
     filesChange(n, f) {
+      if(!f || !f.length || !f[0])
+        return;
+
       const formData = new FormData();
       formData.append('file',f[0]);
       const basePath = BaseUrl.Value;
