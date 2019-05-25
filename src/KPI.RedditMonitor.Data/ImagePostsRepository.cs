@@ -113,8 +113,6 @@ namespace KPI.RedditMonitor.Data
 ]
 ";
 
-            _log.LogInformation(query);
-            Console.WriteLine(query);
             var pipelines = BsonSerializer.Deserialize<BsonDocument[]>(query).ToList();
 
             using (var result = await GetCollection().AggregateAsync<AggregateResult>(pipelines, new AggregateOptions()
