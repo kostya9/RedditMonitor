@@ -1,14 +1,10 @@
 <template>
     <div>
-        <h1>Target Subreddits</h1>
-        <h3>Will use ALL if none are selected</h3>
+        <h1 class="uk-heading-line uk-text-center"><span>Subreddits</span></h1>
+        <p class="uk-text-lead">By default, all are selected</p>
 
-        <label><input @input="(e) => changeFilterDebounce(e)"> Find subreddit</label>
-        <div>
-            <vk-button @click="() => selectAll()">Select All</vk-button>
-        </div>
-        <div>
-            <vk-button @click="() => clearAll()">Clear All</vk-button>
+        <div class="uk-margin">
+            <input class="uk-input" @input="(e) => changeFilterDebounce(e)" placeholder="Find subreddit">
         </div>
 
         <DynamicScroller
@@ -28,6 +24,12 @@
                 </DynamicScrollerItem>
             </template>
         </DynamicScroller>
+        
+        <div class="uk-margin">
+            <vk-button class="uk-margin-right" @click="() => selectAll()">Select All</vk-button>
+        
+            <vk-button @click="() => clearAll()">Clear All</vk-button>
+        </div>
     </div>
 </template>
 
@@ -44,11 +46,11 @@ export default {
     },
     mounted() {
         axios.get('api/subreddits')
-        .then((r) => {
-            this.subreddits = r.data
-                .sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()))
-                .map(s => ({name: s, value: false}));
-        });
+            .then((r) => {
+                this.subreddits = r.data
+                    .sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()))
+                    .map(s => ({name: s, value: false}));
+            });
     },
     methods: {
         changeCheckbox() {
@@ -87,7 +89,7 @@ export default {
 
 <style>
 .scroller {
-  height: 500px;
+  height: 400px;
   overflow-y: auto;
 }
 

@@ -1,8 +1,11 @@
 <template>
-    <div class="uk-width-1-1 uk-margin uk-background-secondary uk-light">
+    <div class="uk-width-1-1 uk-margin uk-section uk-section-secondary uk-padding">
+        <div class="uk-container">
         <vk-grid matched>
             <div class="uk-width-1-3">
-                <img :src="image.url" class="selected-image">
+                <span class="selected-image-container">
+                    <img :src="image.url" class="selected-image">
+                </span>
                 <div class="uk-panel uk-panel-scrollable commentsscroll"> 
                     <div v-for="comment in image.comments" :key="comment">
                         <vk-button-link :class="{'uk-button-primary': selectedComment == comment}" @click="() => selectComment(comment)">
@@ -21,6 +24,7 @@
                 </div>
             </div>
         </vk-grid>
+        </div>
     </div>
 </template>
 
@@ -73,8 +77,14 @@ export default {
 </script>
 
 <style lang="scss">
+
+.selected-image-container {
+    text-align: center;
+}
+
 .selected-image {
-    height: 500px;
+    border: 1px white;
+    max-height: 400px;
     object-fit: contain;
 }
 
@@ -83,6 +93,7 @@ export default {
 }
 
 div.commentsscroll {
+    max-height: 300px;
     white-space: normal;
 
     & .uk-button {
