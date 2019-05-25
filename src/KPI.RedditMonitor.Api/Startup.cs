@@ -58,6 +58,8 @@ namespace KPI.RedditMonitor.Api
             services.AddSingleton<PostInserter>();
             services.AddSingleton<RedditPullStats>();
 
+            services.AddSingleton<RedditPostsService>();
+
             services.AddAWSService<IAmazonSQS>();
 
             if (Configuration.GetValue<bool>("RedditCollector:Run"))

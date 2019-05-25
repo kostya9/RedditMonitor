@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Attributes;
@@ -10,10 +12,12 @@ namespace KPI.RedditMonitor.Data
 {
     public class ImagePostsRepository
     {
+        private readonly ILogger<ImagePostsRepository> _log;
         private readonly IMongoClient _client;
 
-        public ImagePostsRepository(IMongoClient client)
+        public ImagePostsRepository(IMongoClient client, ILogger<ImagePostsRepository> log)
         {
+            _log = log;
             _client = client;
         }
 
@@ -39,11 +43,10 @@ namespace KPI.RedditMonitor.Data
         /// <param name="features"></param>
         /// <param name="top"></param>
         /// <returns></returns>
-        public async Task<List<ImagePost>> Get(Dictionary<string, double[]> features, int top = 10)
+        public async Task<List<TopImage>> Get(Dictionary<string, double[]> features, int top = 10)
         {
-            var reds = BsonArray.Create(features["red"]);
-            var blues = BsonArray.Create(features["blue"]);
-            var greens = BsonArray.Create(features["green"]);
+            var featuresArray = features["red"].Concat(features["green"]).Concat(features["blue"]);
+            var featuresBson = BsonArray.Create(featuresArray);
 
             var query = @"
 [{
@@ -55,27 +58,10 @@ namespace KPI.RedditMonitor.Data
     },
     {
         $addFields: {
-            reds: {
-                $zip: {
-                    inputs: [" + reds + @", '$FeatureBuckets.red']
-                }
-            },
-            blues: {
-                $zip: {
-                    inputs: [" + blues + @", '$FeatureBuckets.blue']
-                }
-            },
-            greens: {
-                $zip: {
-                    inputs: [" + greens + @", '$FeatureBuckets.green']
-                }
-            }
-        }
-    },
-    {
-        $addFields: {
             allFeatures: {
-                $concatArrays: ['$greens', '$reds', '$blues']
+                $zip: {
+                    inputs: [" + featuresBson + @", {$concatArrays: ['$FeatureBuckets.red', '$FeatureBuckets.green', '$FeatureBuckets.blue']}]
+                }
             }
         }
     },
@@ -108,6 +94,9 @@ namespace KPI.RedditMonitor.Data
             image: {
                 '$first': '$image'
             },
+            comments: {
+                '$addToSet': '$image.Url'
+            },
             intersection: {
                 '$first': '$intersection'
             }
@@ -123,6 +112,9 @@ namespace KPI.RedditMonitor.Data
     }
 ]
 ";
+
+            _log.LogInformation(query);
+            Console.WriteLine(query);
             var pipelines = BsonSerializer.Deserialize<BsonDocument[]>(query).ToList();
 
             using (var result = await GetCollection().AggregateAsync<AggregateResult>(pipelines, new AggregateOptions()
@@ -131,7 +123,12 @@ namespace KPI.RedditMonitor.Data
             }))
             {
                 await result.MoveNextAsync();
-                return result.Current.Select(c => c.image).ToList();
+                return result.Current.Select(c => new TopImage
+                {
+                    Comments = c.comments,
+                    Count = c.comments.Length,
+                    Url = c.image.ImageUrl
+                }).ToList();
             }
         }
         
@@ -142,6 +139,8 @@ namespace KPI.RedditMonitor.Data
             public double intersection { get; set; }
 
             public ImagePost image { get; set; }
+
+            public string[] comments { get; set; }
         }
 
     }

@@ -15,27 +15,19 @@
                 <div class="uk-text-meta">Last updated at {{lastUpdatedAt}}</div>
             </div>
         </div>
-        <div class="uk-text-center">
-            <h1 class="uk-heading-primary">
-                Top images by their url
-            </h1>
-        </div>
-        <div uk-grid class="uk-gird-match uk-grid-divider">
-            <top-image v-for="(item, index) in images" :image="item" :key="index" @ignore="() => ignore(item)" :showingIgnored="showingIgnored"> </top-image>
-        </div>
+        <image-list :images="images" title="Top images by their url"></image-list>
     </div>
 </template>
 
 <script>
 import axios from 'axios';
 import BaseUrl from './../BaseUrl.js'
-import TopImage from './../components/Admin/TopImage.vue'
-import { clearTimeout } from 'timers';
+import ImageList from './../components/ImageList.vue'
 
 export default {
     name: 'admin',
     components: {
-        TopImage
+        ImageList
     },
     data() {
         return {
@@ -75,17 +67,6 @@ export default {
     methods: {
         clickComments(item) {
             item.open = !item.open;
-        },
-        ignore(item) {
-            const basePath = BaseUrl.Value;
-            axios.post(`${basePath}/api/TopImages/ignore`, {value: !this.showingIgnored, imageUrl: item.url})
-                .then(() => axios.get(`${basePath}/api/TopImages?ignored=${this.showingIgnored}`))
-                .then((d) => {
-                    const {images, total, ignored} = d.data;
-                    this.images = images;
-                    this.total = total;
-                    this.ignored = ignored;
-                });
         },
         showIgnored() {
             this.showingIgnored = true;

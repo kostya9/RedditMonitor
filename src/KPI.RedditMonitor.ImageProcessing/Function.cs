@@ -12,7 +12,7 @@ using MongoDB.Driver;
 using Newtonsoft.Json;
 using SixLabors.ImageSharp;
 using SixLabors.Memory;
-
+using Microsoft.Extensions.Logging.Abstractions;
 
 // Assembly attribute to enable the Lambda function's JSON input to be converted into a .NET class.
 [assembly: LambdaSerializer(typeof(Amazon.Lambda.Serialization.Json.JsonSerializer))]
@@ -37,7 +37,7 @@ namespace KPI.RedditMonitor.ImageProcessing
                 .Build();
             var mongoClient = new MongoClient(config["MongoDb:ConnectionString"]);
 
-            _repository = new ImagePostsRepository(mongoClient);
+            _repository = new ImagePostsRepository(mongoClient, NullLogger<ImagePostsRepository>.Instance);
             _httpClient = new HttpClient();
             // Configuration.Default.MemoryAllocator = ArrayPoolMemoryAllocator.CreateWithModeratePooling();
         }

@@ -3,18 +3,21 @@
     <vk-notification :messages.sync="messages" position="top-right"></vk-notification>
     <Landing v-if="!signedin"></Landing>
     <div class="uk-container uk-container-expand" v-if="signedin">
-      <nav class="uk-navbar-container" uk-navbar>
-        <div class="uk-navbar-left">
-          <div class="uk-navbar-item">
-            <router-link to='/' class="uk-logo">Reddit Monitor</router-link>
-          </div>
-        </div>
-        <div class="uk-navbar-right">
-          <div class="uk-navbar-item">
+      <vk-navbar>
+        <vk-navbar-nav slot="left">
+          <vk-navbar-logo>
+            <div>Reddit Monitor</div>
+          </vk-navbar-logo>
+          <vk-navbar-item>
+            <router-link to='/' class="uk-button uk-button-default">Search</router-link>
+          </vk-navbar-item>
+        </vk-navbar-nav>
+        <vk-navbar-nav slot="right">
+          <vk-navbar-item>
             <router-link to='/admin' class="uk-button uk-button-default">Admin</router-link>
-          </div>
-        </div>
-      </nav>
+          </vk-navbar-item>
+        </vk-navbar-nav>
+      </vk-navbar>
       <router-view></router-view>
     </div>
   </div>

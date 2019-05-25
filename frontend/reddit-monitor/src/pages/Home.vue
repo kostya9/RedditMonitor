@@ -11,21 +11,7 @@
             </div>
         </div>
 
-        <div uk-grid class="uk-grid-divider">
-            <div class="uk-card uk-card-default uk-card-hover uk-width-1-4 uk-width-small-1-1" v-for="(image, index) in images" :key="index">
-                <div class="uk-card-header">
-                    <img :src="image.imageUrl">
-                </div>
-                <div class="uk-card-footer">
-                    <a class="uk-button uk-button-secondary uk-margin-right" target='_blank' :href="image.imageUrl">
-                        Image
-                    </a>
-                    <a class="uk-button uk-button-secondary" target='_blank' :href="`https://reddit.com${image.url}`">
-                        Post
-                    </a>
-                </div>
-            </div>
-        </div>
+        <image-list v-if="images.length" :images="images" title="Found images"></image-list>
     </div>
   </div>
 </template>
@@ -33,9 +19,14 @@
 <script>
 import axios from 'axios';
 import BaseUrl from './../BaseUrl.js'
+import ImageList from './../components/ImageList.vue'
+
 export default {
   name: 'HelloWorld',
   props: {
+  },
+  components: {
+    ImageList
   },
   data() {
     return {

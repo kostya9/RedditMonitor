@@ -4,6 +4,7 @@ using System.Text;
 using System.Threading.Tasks;
 using KPI.RedditMonitor.Data;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging.Abstractions;
 using MongoDB.Bson.Serialization.Conventions;
 using MongoDB.Driver;
 using Xunit;
@@ -25,7 +26,7 @@ namespace KPI.RedditMonitor.Tests
 
             var mongoClient = new MongoClient(config["MongoDb:ConnectionString"]);
 
-            _repository = new ImagePostsRepository(mongoClient);
+            _repository = new ImagePostsRepository(mongoClient, NullLogger<ImagePostsRepository>.Instance);
         }
 
         [Fact]

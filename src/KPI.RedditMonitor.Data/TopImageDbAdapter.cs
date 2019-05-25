@@ -46,13 +46,16 @@ namespace KPI.RedditMonitor.Data
 
             foreach (var topImageDto in images)
             {
-                if (!topImageDto.Url.StartsWith("http"))
-                    topImageDto.Url = $"https://{topImageDto.Url}";
-
-                topImageDto.Comments = topImageDto.Comments.Select(c => $"https://reddit.com{c}");
+                topImageDto.EnsureUrlFormat();
             }
 
-            return images;
+            // Group again gue to adjustments
+            return images.GroupBy(i => i.Url).Select(g => new TopImage
+            {
+                Comments = g.SelectMany(gg => gg.Comments).ToArray(),
+                Count = g.Sum(gg => gg.Count),
+                Url = g.Key
+            }).ToList();
         }
 
         public async Task<TopImageCount> GetCount()
@@ -68,9 +71,15 @@ namespace KPI.RedditMonitor.Data
 
     public class TopImage
     {
-        public string Url { get; set; }
+        public void EnsureUrlFormat() 
+        {
+            if (!Url.StartsWith("http"))
+                Url = $"https://{Url}";
 
-        public string CdnUrl { get; set; }
+            Comments = Comments.Select(c => $"https://reddit.com{c}").Distinct();
+        }
+
+        public string Url { get; set; }
 
         public int Count { get; set; }
 

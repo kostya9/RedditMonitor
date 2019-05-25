@@ -12,6 +12,9 @@ import Axios from 'axios';
 import BaseUrl from './BaseUrl';
 import NotificationStore from './notificationStore';
 
+// import on your project (less then 1KB gziped)
+import vueSmoothScroll from 'vue2-smooth-scroll'
+
 //import '@vuikit/theme'
 
 
@@ -28,6 +31,7 @@ const router = new VueRouter({
 Vue.use(Vuikit)
 Vue.use(VuikitIcons)
 Vue.use(VueRouter);
+Vue.use(vueSmoothScroll)
 
 Vue.config.productionTip = false
 
@@ -53,7 +57,7 @@ Axios.interceptors.response.use(undefined, (err) => {
     notifications.error('Your session has expired, please sign in')
   }
   else {
-    return Promise.reject(error);
+    return Promise.reject(err);
   }
 });
 

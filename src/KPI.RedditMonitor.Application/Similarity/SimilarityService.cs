@@ -15,12 +15,18 @@ namespace KPI.RedditMonitor.Application.Similarity
             _repository = repository;
         }
 
-        public async Task<List<ImagePost>> Find(Stream content)
+        public async Task<List<TopImage>> Find(Stream content)
         {
             var imageFeatures = ImageFeatureFactory.Create(content);
 
             var features = imageFeatures.GetBuckets();
-            return await _repository.Get(features);
+            var images = await _repository.Get(features);
+            foreach (var topImageDto in images)
+            {
+                topImageDto.EnsureUrlFormat();
+            }
+
+            return images;
         }
     }
 }
