@@ -16,7 +16,7 @@ namespace KPI.RedditMonitor.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<RedditPullStats>> Get()
+        public ActionResult<RedditPullStats> Get()
         {
             return _stats;
         }

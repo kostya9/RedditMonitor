@@ -8,15 +8,16 @@ namespace KPI.RedditMonitor.Application.Similarity
     {
         public static ImageFeatures Create(Stream content)
         {
-            var histograms = new ImageFeatures();
+            var features = new ImageFeatures();
             using (var image = Image.Load(content))
             {
-                var buckets = 4;
-                var minRgb = 0;
-                var maxRgb = 255;
-                var red = histograms.AddHistogram("red", buckets, minRgb, maxRgb);
-                var green = histograms.AddHistogram("green", buckets, minRgb, maxRgb);
-                var blue = histograms.AddHistogram("blue", buckets, minRgb, maxRgb);
+                const int buckets = 4;
+                const int minRgb = 0;
+                const int maxRgb = 255;
+
+                var red = features.AddHistogram("red", buckets, minRgb, maxRgb);
+                var green = features.AddHistogram("green", buckets, minRgb, maxRgb);
+                var blue = features.AddHistogram("blue", buckets, minRgb, maxRgb);
 
                 foreach (var pixel in image.GetPixelSpan())
                 {
@@ -26,7 +27,7 @@ namespace KPI.RedditMonitor.Application.Similarity
                 }
             }
 
-            return histograms;
+            return features;
         }
     }
 }

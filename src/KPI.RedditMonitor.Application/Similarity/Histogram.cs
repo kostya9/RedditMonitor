@@ -32,7 +32,7 @@ namespace KPI.RedditMonitor.Application.Similarity
             _buckets[GetValueIndex(value)]++;
         }
 
-        public double[] GetBuckets()
+        public double[] GetNormalizedBuckets()
         {
             var total = _buckets.Sum();
             var normalized = _buckets.Select(b => b / (double)total).ToArray();

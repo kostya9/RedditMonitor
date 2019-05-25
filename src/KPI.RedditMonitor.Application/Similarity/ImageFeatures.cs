@@ -7,7 +7,7 @@ namespace KPI.RedditMonitor.Application.Similarity
 {
     /// <summary>
     /// Separates all pixels into buckets by their value
-    /// Image Similarity preprocessing vie feature histogram method
+    /// Image Similarity preprocessing via feature histogram method
     /// </summary>
     public class ImageFeatures
     {
@@ -27,7 +27,7 @@ namespace KPI.RedditMonitor.Application.Similarity
 
         public Dictionary<string, double[]> GetBuckets()
         {
-            return _histograms.ToDictionary((kv) => kv.Key, kv => kv.Value.GetBuckets());
+            return _histograms.ToDictionary((kv) => kv.Key, kv => kv.Value.GetNormalizedBuckets());
         }
     }
 }
