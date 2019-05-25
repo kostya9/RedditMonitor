@@ -8,13 +8,13 @@ using RedditSharp;
 
 namespace KPI.RedditMonitor 
 {
-    public class RedditPostsService
+    public class RedditDataService
     {
         private readonly RedditOptions _options;
-        private readonly ILogger<RedditPostsService> _log;
+        private readonly ILogger<RedditDataService> _log;
         private RedditSharp.Reddit _reddit;
 
-        public RedditPostsService(IOptions<RedditOptions> options, ILogger<RedditPostsService> log)
+        public RedditDataService(IOptions<RedditOptions> options, ILogger<RedditDataService> log)
         {
             _options = options.Value;
             _log = log;

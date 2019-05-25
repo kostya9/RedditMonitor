@@ -14,7 +14,7 @@ namespace KPI.RedditMonitor.Collector.RedditPull
         private static readonly Regex imageRegexp =
             new Regex(imageRegexpMatch, RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-        public static IEnumerable<ImagePost> Create(string id, string text, string url, DateTime createdAt, bool ignore)
+        public static IEnumerable<ImagePost> Create(string id, string text, string url, DateTime createdAt, bool ignore, string subreddit)
         {
             var parsed = imageRegexp.Match(text);
             var urls = new HashSet<string>();
@@ -48,7 +48,8 @@ namespace KPI.RedditMonitor.Collector.RedditPull
                         Text = text,
                         ImageUrl = imageUrl,
                         Url = url,
-                        Ignore = ignore
+                        Ignore = ignore,
+                        Subreddit = subreddit
                     };
                 }
 

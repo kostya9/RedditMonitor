@@ -19,6 +19,8 @@ namespace KPI.RedditMonitor.Data
 
         public bool Ignore { get; set; }
 
+        public string Subreddit { get; set; }
+
         public Dictionary<string, double[]> FeatureBuckets { get; set; }
     }
 }

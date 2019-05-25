@@ -32,6 +32,19 @@ namespace KPI.RedditMonitor.Data
             await GetCollection().InsertManyAsync(posts);
         }
 
+        public async Task<List<string>> GetAllSubreddits() 
+        {
+            var r = await GetCollection().DistinctAsync(a => a.Subreddit, (a) => true);
+            
+            var results = new List<string>();
+            while(await r.MoveNextAsync()) 
+            {
+                results.AddRange(r.Current);
+            }
+
+            return results;
+        }
+
         public async Task Add(ImagePost imagePost)
         {
             await GetCollection().InsertOneAsync(imagePost);
@@ -43,18 +56,24 @@ namespace KPI.RedditMonitor.Data
         /// <param name="features"></param>
         /// <param name="top"></param>
         /// <returns></returns>
-        public async Task<List<TopImage>> Get(Dictionary<string, double[]> features, int top = 10)
+        public async Task<List<TopImage>> Get(Dictionary<string, double[]> features, int top = 10, string[] subreddits = null)
         {
             var featuresArray = features["red"].Concat(features["green"]).Concat(features["blue"]);
             var featuresBson = BsonArray.Create(featuresArray);
+
+            var bsonSubreddits = BsonArray.Create(subreddits ?? new string[0]);
 
             var query = @"
 [{
         $match: {
             Ignore: {
                 '$in': [null, false]
-            }
-        }
+            }" + 
+            (subreddits?.Length > 0 ? @", 
+            Subreddit: {
+                '$in': " + bsonSubreddits + @"
+            }" : string.Empty) +
+@"      }
     },
     {
         $addFields: {

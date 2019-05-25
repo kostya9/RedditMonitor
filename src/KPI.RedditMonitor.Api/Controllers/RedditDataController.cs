@@ -9,9 +9,9 @@ namespace KPI.RedditMonitor.Api.Controllers
     [Route("api/[controller]")]
     public class RedditDataController : ControllerBase
     {
-        private readonly RedditPostsService _service;
+        private readonly RedditDataService _service;
 
-        public RedditDataController(RedditPostsService service)
+        public RedditDataController(RedditDataService service)
         {
             _service = service;
         }

@@ -24,7 +24,7 @@ namespace KPI.RedditMonitor.Data
             return _collection.UpdateManyAsync(i => i.ImageUrl.Contains(imageUrl), update);
         }
 
-        public async Task<List<TopImage>> GetTop(int count, bool showIgnored)
+        public async Task<List<TopImage>> GetTop(int count, bool showIgnored, string[] subreddits)
         {
             var query = _collection.Aggregate();
 
@@ -32,6 +32,11 @@ namespace KPI.RedditMonitor.Data
                 query = query.Match(image => image.Ignore != true);
             else
                 query = query.Match(image => image.Ignore == true);
+
+            if(subreddits?.Length > 0) 
+            {
+                query = query.Match(image => subreddits.Contains(image.Subreddit));
+            }
 
             var images = await query
                 .Group(image => image.ImageUrl, group => new TopImage

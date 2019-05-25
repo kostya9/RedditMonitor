@@ -11,13 +11,14 @@ namespace KPI.RedditMonitor.Collector.RedditPull.Collectors
 
     public class RedditPost
     {
-        public RedditPost(string id, string text, string url, DateTime createdAt, bool ignore)
+        public RedditPost(string id, string text, string url, DateTime createdAt, bool ignore, string subreddit)
         {
             Id = id;
             Text = text;
             Url = url;
             CreatedAt = createdAt;
             Ignore = ignore;
+            Subreddit = subreddit;
         }
 
         public string Id { get; }
@@ -29,5 +30,7 @@ namespace KPI.RedditMonitor.Collector.RedditPull.Collectors
         public DateTime CreatedAt { get; }
 
         public bool Ignore { get; }
+        
+        public string Subreddit { get; }
     }
 }

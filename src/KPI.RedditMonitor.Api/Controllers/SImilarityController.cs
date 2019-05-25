@@ -21,9 +21,9 @@ namespace KPI.RedditMonitor.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<List<TopImage>>> GetSimilar(IFormFile file)
+        public async Task<ActionResult<List<TopImage>>> GetSimilar(IFormFile file, [FromForm] string[] subreddits)
         {
-            return await _service.Find(file.OpenReadStream());
+            return await _service.Find(file.OpenReadStream(), subreddits);
         }
     }
 }

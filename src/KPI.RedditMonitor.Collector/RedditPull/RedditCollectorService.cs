@@ -32,7 +32,7 @@ namespace KPI.RedditMonitor.Collector.RedditPull
 
             await _collector.SubscribeOnEntries(e =>
             {
-                var imagePosts = ImagePostFactory.Create(e.Id, e.Text, e.Url, e.CreatedAt, e.Ignore);
+                var imagePosts = ImagePostFactory.Create(e.Id, e.Text, e.Url, e.CreatedAt, e.Ignore, e.Subreddit);
 
                 foreach (var imagePost in imagePosts) _inserter.Add(imagePost);
 

@@ -23,7 +23,6 @@
 
 <script>
 import SignForm from './../components/SignForm'
-import UIkit from 'uikit';
 
 
 export default {

@@ -52,6 +52,9 @@ Axios.interceptors.request.use((c) => {
 Axios.interceptors.response.use((c) => {
   asyncStore.receiveCall();
   return c;
+}, (e) => {
+  asyncStore.receiveCall();
+  return e;
 })
 
 Axios.interceptors.request.use((c) => {

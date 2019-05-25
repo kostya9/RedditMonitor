@@ -39,10 +39,10 @@ namespace KPI.RedditMonitor.Collector.RedditPull.Collectors
 
                 comments.ForEachAsync(t =>
                     callback(new RedditPost(t.Id, t.Body, t.Permalink.ToString(), t.CreatedUTC,
-                        t.IsStickied || t.Distinguished != ModeratableThing.DistinguishType.None)), source.Token);
+                        t.IsStickied || t.Distinguished != ModeratableThing.DistinguishType.None, t.Subreddit)), source.Token);
                 posts.ForEachAsync(t =>
                     callback(new RedditPost(t.Id, t.Title + " " + t.SelfText + " " + t.Url.AbsoluteUri,
-                        t.Permalink.ToString(), t.CreatedUTC, t.NSFW)), source.Token);
+                        t.Permalink.ToString(), t.CreatedUTC, t.NSFW, t.SubredditName)), source.Token);
                 try
                 {
                     await Task.WhenAll(comments.Enumerate(source.Token), posts.Enumerate(source.Token));

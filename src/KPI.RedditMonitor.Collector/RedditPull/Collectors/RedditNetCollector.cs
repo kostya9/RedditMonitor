@@ -28,7 +28,7 @@ namespace KPI.RedditMonitor.Collector.RedditPull.Collectors
                 {
                     var t = added.Listing;
                     callback(new RedditPost(t.Id, t.Title + " " + t.SelfText + " " + t.URL,
-                        t.Permalink.ToString(), t.CreatedUTC, added.NSFW));
+                        t.Permalink.ToString(), t.CreatedUTC, added.NSFW, added.Subreddit));
                 }
             };
             all.Posts.MonitorNew();

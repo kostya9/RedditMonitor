@@ -15,6 +15,7 @@
                 <div class="uk-text-meta">Last updated at {{lastUpdatedAt}}</div>
             </div>
         </div>
+        <subreddit-selector></subreddit-selector>
         <image-list :images="images" title="Top images by their url"></image-list>
     </div>
 </template>
@@ -23,11 +24,12 @@
 import axios from 'axios';
 import BaseUrl from './../BaseUrl.js'
 import ImageList from './../components/ImageList.vue'
+import SubredditSelector from './../components/SubredditSelector.vue'
 
 export default {
     name: 'admin',
     components: {
-        ImageList
+        ImageList, SubredditSelector
     },
     data() {
         return {
