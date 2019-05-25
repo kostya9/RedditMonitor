@@ -12,8 +12,7 @@ import Axios from 'axios';
 import BaseUrl from './BaseUrl';
 import NotificationStore from './notificationStore';
 
-// import on your project (less then 1KB gziped)
-import vueSmoothScroll from 'vue2-smooth-scroll'
+import AsyncStore from './asyncStore.js';
 
 //import '@vuikit/theme'
 
@@ -31,7 +30,6 @@ const router = new VueRouter({
 Vue.use(Vuikit)
 Vue.use(VuikitIcons)
 Vue.use(VueRouter);
-Vue.use(vueSmoothScroll)
 
 Vue.config.productionTip = false
 
@@ -41,8 +39,17 @@ Vue.prototype.$auth = store;
 const notifications = new NotificationStore();
 Vue.prototype.$notifications = notifications;
 
+const asyncStore = new AsyncStore();
+Vue.prototype.$asyncStore = asyncStore;
+
 Axios.interceptors.request.use((c) => {
+  asyncStore.sendCall();
   c.baseURL = BaseUrl.Value;
+  return c;
+});
+
+Axios.interceptors.response.use((c) => {
+  asyncStore.receiveCall();
   return c;
 })
 

@@ -1,38 +1,43 @@
 <template>
   <div>
-    <vk-notification :messages.sync="messages" position="top-right"></vk-notification>
-    <Landing v-if="!signedin"></Landing>
-    <div class="uk-container uk-container-expand" v-if="signedin">
-      <vk-navbar>
-        <vk-navbar-nav slot="left">
-          <vk-navbar-logo>
-            <div>Reddit Monitor</div>
-          </vk-navbar-logo>
-          <vk-navbar-item>
-            <router-link to='/' class="uk-button uk-button-default">Search</router-link>
-          </vk-navbar-item>
-        </vk-navbar-nav>
-        <vk-navbar-nav slot="right">
-          <vk-navbar-item>
-            <router-link to='/admin' class="uk-button uk-button-default">Admin</router-link>
-          </vk-navbar-item>
-        </vk-navbar-nav>
-      </vk-navbar>
-      <router-view></router-view>
-    </div>
+      <vk-notification :messages.sync="messages" position="top-right"></vk-notification>
+      <Landing v-if="!signedin"></Landing>
+      <div class="uk-container uk-container-expand" v-if="signedin">
+        <vk-navbar>
+          <vk-navbar-nav slot="left">
+            <vk-navbar-logo>
+              <div>Reddit Monitor</div>
+            </vk-navbar-logo>
+            <vk-navbar-item>
+              <router-link to='/' class="uk-button uk-button-default">Search</router-link>
+            </vk-navbar-item>
+          </vk-navbar-nav>
+          <vk-navbar-nav slot="right">
+            <vk-navbar-item>
+              <router-link to='/admin' class="uk-button uk-button-default">Admin</router-link>
+            </vk-navbar-item>
+          </vk-navbar-nav>
+        </vk-navbar>
+        <router-view></router-view>
+      </div>
+        <loading :active="showSpinner" 
+        :can-cancel="false" 
+        :is-full-page="true"></loading>
   </div>
 </template>
 
 <script>
 import Landing from './pages/Landing'
-
+import Loading from 'vue-loading-overlay';
+import 'vue-loading-overlay/dist/vue-loading.css';
 
 export default {
   name: "app",
   data () {
     return {
       signedin: false,
-      messages: []
+      messages: [],
+      showSpinner: false
     }
   },
   created() {
@@ -40,9 +45,13 @@ export default {
     this.$auth.subscribeSignin(() => this.signedin = true);
     this.$auth.subscribeSignout(() => this.signedin = false);
     this.$notifications.onNewNotification((n) => this.messages.push(n));
+    this.$asyncStore.onAsyncStateChanged((c) => 
+    {
+      this.showSpinner = c;
+    });
   },
   components: {
-    Landing
+    Landing, Loading
   },
 };
 </script>

@@ -1,5 +1,5 @@
 <template>
-    <div id="selected">
+    <div>
         <div class="uk-text-center">
             <h1 class="uk-heading-primary">
                 {{title}}
