@@ -9,7 +9,6 @@ export default class AsyncStore extends Vue {
     }
 
     sendCall() {
-        console.log('plus');
         if(this.calls === 0) {
             this.$emit('asyncStateChanged', true);
         }
@@ -18,7 +17,6 @@ export default class AsyncStore extends Vue {
     }
 
     receiveCall() {
-        console.log('minus');
         this.calls--;
 
         if(this.calls === 0) {
@@ -27,7 +25,6 @@ export default class AsyncStore extends Vue {
     }
     
     onAsyncStateChanged(func) {
-        console.log('sub');
         this.$on('asyncStateChanged', func);
     }
 }
