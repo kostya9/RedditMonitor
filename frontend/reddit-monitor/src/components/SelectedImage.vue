@@ -37,8 +37,22 @@ export default {
             selectedCommentText: null
         }
     },
+    watch: {
+        image: {
+            immediate: true,
+            handler: function (cur) {
+                if(!cur)
+                    return;
+
+                setTimeout(() => this.selectComment(cur.comments[0]), 1000);
+            }
+        }
+    },
     methods: {
         selectComment(c) {
+            if(this.selectedComment == c)
+                return;
+            
             this.selectedComment = c;
             axios.post('/api/redditdata/findpost', {url: c})
                 .then(r => {

@@ -6,7 +6,7 @@
             </h1>
         </div>
         <vk-grid matched>
-            <transition-group name="image-list" tag="div" @before-leave="beforeLeave">
+            <transition-group name="image-list" tag="div">
                 <template v-for="item in images">
                     <top-image v-if="!selectedImage || selectedImage.url !== item.url" :key="item.url + item.count" :image="item" @opened="(i) => selectImage(i)"> </top-image>
                     <selected-image v-else :image="item" :key="item.url + item.count" @closed="() => selectImage(null)">dfdsf</selected-image>
@@ -31,13 +31,6 @@ export default {
     methods: {
         selectImage(i) {
             this.selectedImage = i;
-        },
-          beforeLeave(el) {
-            const {marginLeft, marginTop, width, height} = window.getComputedStyle(el)
-            el.style.left = `${el.offsetLeft - parseFloat(marginLeft, 10)}px`
-            el.style.top = `${el.offsetTop - parseFloat(marginTop, 10)}px`
-            el.style.width = width
-            el.style.height = height
         }
     }
 }
