@@ -61,7 +61,13 @@ namespace KPI.RedditMonitor.Data
             var featuresArray = features["red"].Concat(features["green"]).Concat(features["blue"]);
             var featuresBson = BsonArray.Create(featuresArray);
 
-            var bsonSubreddits = BsonArray.Create(subreddits ?? new string[0]);
+            var bsonSubreddits = new BsonArray();
+
+            foreach(var a in subreddits ?? new string[0]) {
+                bsonSubreddits.Add(a);
+            }
+
+            _log.LogInformation(bsonSubreddits.ToJson());
 
             var query = @"
 [{
@@ -71,7 +77,7 @@ namespace KPI.RedditMonitor.Data
             }" + 
             (subreddits?.Length > 0 ? @", 
             Subreddit: {
-                '$in': " + bsonSubreddits + @"
+                '$in': " + bsonSubreddits.ToJson() + @"
             }" : string.Empty) +
 @"      }
     },

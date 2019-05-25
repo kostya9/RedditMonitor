@@ -15,7 +15,12 @@ import NotificationStore from './notificationStore';
 
 import AsyncStore from './asyncStore.js';
 
-//import '@vuikit/theme'
+import SelectedSubredditsStore from './selectedSubredditsStore.js';
+
+import "vue-virtual-scroller/dist/vue-virtual-scroller.css";
+import VueVirtualScroller from 'vue-virtual-scroller'
+
+Vue.use(VueVirtualScroller)
 
 
 const routes = [
@@ -43,6 +48,9 @@ Vue.prototype.$notifications = notifications;
 const asyncStore = new AsyncStore();
 Vue.prototype.$asyncStore = asyncStore;
 
+const subredditStore = new SelectedSubredditsStore();
+Vue.prototype.$subredditStore = subredditStore;
+
 Axios.interceptors.request.use((c) => {
   asyncStore.sendCall();
   c.baseURL = BaseUrl.Value;
@@ -54,7 +62,7 @@ Axios.interceptors.response.use((c) => {
   return c;
 }, (e) => {
   asyncStore.receiveCall();
-  return e;
+  return Promise.reject(e);
 })
 
 Axios.interceptors.request.use((c) => {

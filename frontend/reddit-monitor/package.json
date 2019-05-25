@@ -14,6 +14,7 @@
     "uikit": "^3.0.3",
     "vue": "^2.5.22",
     "vue-loading-overlay": "^3.2.0",
+    "vue-virtual-scroller": "^1.0.0-rc.2",
     "vuikit": "^0.8.10"
   },
   "devDependencies": {

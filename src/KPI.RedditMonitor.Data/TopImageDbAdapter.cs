@@ -1,4 +1,5 @@
-﻿using MongoDB.Bson;
+﻿using Microsoft.Extensions.Logging;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,10 +9,12 @@ namespace KPI.RedditMonitor.Data
 {
     public class TopImageDbAdapter
     {
+        private readonly ILogger<TopImageDbAdapter> _log;
         private readonly IMongoCollection<ImagePost> _collection;
 
-        public TopImageDbAdapter(IMongoClient client)
+        public TopImageDbAdapter(IMongoClient client, ILogger<TopImageDbAdapter> log)
         {
+            _log = log;
             _collection = client.GetDatabase("reddit").GetCollection<ImagePost>("posts");
         }
 
@@ -35,8 +38,11 @@ namespace KPI.RedditMonitor.Data
 
             if(subreddits?.Length > 0) 
             {
-                query = query.Match(image => subreddits.Contains(image.Subreddit));
+                var filter = Builders<ImagePost>.Filter.In(a => a.Subreddit, subreddits);
+                query = query.Match(filter);
             }
+
+            _log.LogInformation(query.ToString());
 
             var images = await query
                 .Group(image => image.ImageUrl, group => new TopImage

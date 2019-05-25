@@ -16,10 +16,10 @@ namespace KPI.RedditMonitor.Api.Controllers
             _topImages = topImages;
         }
 
-        [HttpGet]
-        public async Task<ActionResult<TopImageResponse>> Get([FromQuery]bool ignored = false, [FromQuery] string[] subreddits = null)
+        [HttpPost]
+        public async Task<ActionResult<TopImageResponse>> Post(TopImageQueryRequest request)
         {
-            var images = await _topImages.GetTop(!ignored ? 12 : 100, ignored, subreddits);
+            var images = await _topImages.GetTop(!request.Ignored ? 12 : 100, request.Ignored, request.Subreddits);
             var count = await _topImages.GetCount();
 
             return new TopImageResponse
@@ -37,6 +37,13 @@ namespace KPI.RedditMonitor.Api.Controllers
 
             return NoContent();
         }
+    }
+
+    public class TopImageQueryRequest 
+    {
+        public bool Ignored { get; set; }
+
+        public string[] Subreddits { get; set; }
     }
 
     public class IgnoreRequest

@@ -15,7 +15,6 @@
                 <div class="uk-text-meta">Last updated at {{lastUpdatedAt}}</div>
             </div>
         </div>
-        <subreddit-selector></subreddit-selector>
         <image-list :images="images" title="Top images by their url"></image-list>
     </div>
 </template>
@@ -24,12 +23,11 @@
 import axios from 'axios';
 import BaseUrl from './../BaseUrl.js'
 import ImageList from './../components/ImageList.vue'
-import SubredditSelector from './../components/SubredditSelector.vue'
 
 export default {
     name: 'admin',
     components: {
-        ImageList, SubredditSelector
+        ImageList
     },
     data() {
         return {
@@ -38,17 +36,18 @@ export default {
             ignored: 0,
             showingIgnored: false,
             imageStats: {images: 0, seconds: 0, lastUpdated: null},
-            fetchInterval: 0
+            fetchInterval: 0,
+            selectedSubreddits: []
         }
     },
     created() {
-        const fetchImagesData = () => axios.get(`${BaseUrl.Value}/api/TopImages?ignored=${this.showingIgnored}`)
-            .then((d) => {
-                const {images, total, ignored} = d.data;
-                this.images = images;
-                this.total = total;
-                this.ignored = ignored;
-            });
+        this.selectedSubreddits = this.$subredditStore.getSubreddits();
+        this.$subredditStore.subscribeOnSubredditsChanged((s) => {
+            this.selectedSubreddits = s;
+            this.reload();
+        });
+
+        const fetchImagesData = () => this.reload();
 
         const fetchCollectionData = () => axios.get(`${BaseUrl.Value}/api/RedditPullStats`)
             .then(d => {
@@ -79,8 +78,7 @@ export default {
             this.reload();
         },
         reload() {
-            const basePath = BaseUrl.Value;
-            axios.get(`${basePath}/api/TopImages?ignored=${this.showingIgnored}`)
+            axios.post(`api/TopImages`, {ignored: this.showingIgnored, subreddits: this.selectedSubreddits})
                 .then((d) => {
                     const {images, total, ignored} = d.data;
                     this.images = images;

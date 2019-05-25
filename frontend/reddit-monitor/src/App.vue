@@ -14,6 +14,9 @@
           </vk-navbar-nav>
           <vk-navbar-nav slot="right">
             <vk-navbar-item>
+              <div to='/admin' class="uk-button uk-button-default" uk-toggle="target: #modal-settings"><vk-icons-cog></vk-icons-cog></div>
+            </vk-navbar-item>
+            <vk-navbar-item>
               <router-link to='/admin' class="uk-button uk-button-default">Admin</router-link>
             </vk-navbar-item>
             <vk-navbar-item>
@@ -26,10 +29,16 @@
         <loading :active="showSpinner" 
         :can-cancel="false" 
         :is-full-page="true"></loading>
+        <div id="modal-settings" uk-modal>
+        <div class="uk-modal-dialog uk-modal-body">
+            <subreddit-selector></subreddit-selector>
+        </div>
+    </div>
   </div>
 </template>
 
 <script>
+import SubredditSelector from './components/SubredditSelector.vue'
 import Landing from './pages/Landing'
 import Loading from 'vue-loading-overlay';
 import 'vue-loading-overlay/dist/vue-loading.css';
@@ -54,7 +63,7 @@ export default {
     });
   },
   components: {
-    Landing, Loading
+    Landing, Loading, SubredditSelector
   },
   methods: {
     signout() {

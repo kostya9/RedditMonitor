@@ -30,7 +30,8 @@ export default {
   },
   data() {
     return {
-      images: []
+      images: [],
+      selectedSubreddits: []
     }
   },
   methods: {
@@ -40,6 +41,9 @@ export default {
 
       const formData = new FormData();
       formData.append('file',f[0]);
+      for (var i = 0; i < this.selectedSubreddits.length; i++) {
+        formData.append('subreddits[]', this.selectedSubreddits[i]);
+      }
       const basePath = BaseUrl.Value;
       this.images = [];
       axios.post(`${basePath}/api/Similarity`, formData)
@@ -48,6 +52,12 @@ export default {
         });
     }
   },
+  created() {
+    this.selectedSubreddits = this.$subredditStore.getSubreddits();
+    this.$subredditStore.subscribeOnSubredditsChanged((s) => {
+        this.selectedSubreddits = s;
+    });
+  }
 }
 </script>
 
