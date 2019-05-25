@@ -6,6 +6,7 @@ import Home from "./pages/Home.vue";
 import Admin from "./pages/Admin.vue";
 
 import Vuikit from 'vuikit'
+import 'uikit';
 import VuikitIcons from '@vuikit/icons'
 import AuthenticationStore from './authenticationStore.js';
 import Axios from 'axios';

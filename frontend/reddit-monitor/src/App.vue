@@ -2,7 +2,7 @@
   <div>
       <vk-notification :messages.sync="messages" position="top-right"></vk-notification>
       <Landing v-if="!signedin"></Landing>
-      <div class="uk-container uk-container-expand" v-if="signedin">
+      <div class="uk-container uk-container-expand" v-else>
         <vk-navbar>
           <vk-navbar-nav slot="left">
             <vk-navbar-logo>
@@ -15,6 +15,9 @@
           <vk-navbar-nav slot="right">
             <vk-navbar-item>
               <router-link to='/admin' class="uk-button uk-button-default">Admin</router-link>
+            </vk-navbar-item>
+            <vk-navbar-item>
+              <vk-button-link href="#" class="uk-button uk-button-default" @click="signout()">Log out</vk-button-link>
             </vk-navbar-item>
           </vk-navbar-nav>
         </vk-navbar>
@@ -53,6 +56,11 @@ export default {
   components: {
     Landing, Loading
   },
+  methods: {
+    signout() {
+      this.$auth.signout();
+    }
+  }
 };
 </script>
 

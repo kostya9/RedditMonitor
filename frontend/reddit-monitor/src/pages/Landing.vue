@@ -4,32 +4,42 @@
     <div class="uk-container uk-container-center">
         <section class="uk-grid uk-grid-match" data-uk-grid-margin="">
             <div class="uk-width-medium-1-1">
-                <div class="uk-panel  uk-text-center" data-uk-parallax="{ opacity: '1,0', y:'-150' }">
+                <div class="uk-panel uk-text-center" data-uk-parallax="{ opacity: '1,0', y:'-150' }">
                 <h3>Reddit Monitor</h3>
                 <p>Monitoring how images are used in Reddit social network</p>
-                <a class="uk-button-large uk-margin-top" href="#" @click="show = true">Start</a>
+                <button class="uk-button uk-button-primary uk-button-large uk-margin-top" uk-toggle="target: #modal-signin" type="button">Start</button>
                 </div>
             </div>
         </section>
     </div>
     </header>
-    <vk-modal :show.sync="show">
-         <SignForm></SignForm>
-    </vk-modal>
+    <div id="modal-signin" uk-modal>
+        <div class="uk-modal-dialog uk-modal-body">
+            <SignForm></SignForm>
+        </div>
+    </div>
 </div>
 </template>
 
 <script>
 import SignForm from './../components/SignForm'
+import UIkit from 'uikit';
+
 
 export default {
     components: {
         SignForm
     },
-    data: function() {
-        return {
-            show: false
-        }
+    created() {
+        // Workaround around modal duplicates spawning on v-if bug
+        this.$auth.subscribeSignin(() => {
+            var modal = document.getElementById('modal-signin');
+
+            if(!modal)
+                return;
+
+            modal.parentNode.removeChild(modal);
+        });
     }
 }
 </script>
@@ -64,9 +74,9 @@ header {
             url("./../assets/landing.jpg");
 		background-attachment: scroll;
 	}
-	a {
+	button {
      $main-color: #f7b243;
-		&:link, &:visited {
+		& {
             color: white;
 			letter-spacing: 2px;
 			display: inline-block;
