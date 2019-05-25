@@ -34,7 +34,7 @@ namespace KPI.RedditMonitor.Data
 
         public async Task<List<string>> GetAllSubreddits() 
         {
-            var r = await GetCollection().DistinctAsync(a => a.Subreddit, (a) => true);
+            var r = await GetCollection().DistinctAsync(a => a.Subreddit, (a) => a.Ignore != true);
             
             var results = new List<string>();
             while(await r.MoveNextAsync()) 
