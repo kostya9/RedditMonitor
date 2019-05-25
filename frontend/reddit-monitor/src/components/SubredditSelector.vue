@@ -34,23 +34,31 @@
 </template>
 
 <script>
-import axios from 'axios';
 import _ from 'lodash';
 
 export default {
+    props: ['allSubreddits'],
     data() {
         return {
-            subreddits: [],
-            subredditFilter: ""
+            subredditFilter: "",
+            subreddits: []
         }
     },
-    mounted() {
-        axios.get('api/subreddits')
-            .then((r) => {
-                this.subreddits = r.data
-                    .sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()))
-                    .map(s => ({name: s, value: false}));
-            });
+    watch: {
+        allSubreddits(newValue, old) {
+            if(!newValue || newValue == old)
+                return;
+
+            var oldValuesMap = {};
+
+            for(const oldValue of this.subreddits) {
+                oldValuesMap[oldValue.name] = oldValue.value;
+            }
+
+            this.subreddits = newValue
+                .sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()))
+                .map(s => ({name: s, value: oldValuesMap[s]}));
+        }
     },
     methods: {
         changeCheckbox() {

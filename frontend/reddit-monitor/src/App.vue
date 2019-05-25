@@ -13,8 +13,8 @@
             </vk-navbar-item>
           </vk-navbar-nav>
           <vk-navbar-nav slot="right">
-            <vk-navbar-item>
-              <div to='/admin' class="uk-button uk-button-default" uk-toggle="target: #modal-settings"><vk-icons-cog></vk-icons-cog></div>
+            <vk-navbar-item @click="fetchSubreddits()">
+              <vk-button><vk-icons-cog></vk-icons-cog></vk-button>
             </vk-navbar-item>
             <vk-navbar-item>
               <router-link to='/admin' class="uk-button uk-button-default">Admin</router-link>
@@ -29,15 +29,14 @@
         <loading :active="showSpinner" 
         :can-cancel="false" 
         :is-full-page="true"></loading>
-        <div id="modal-settings" uk-modal>
-        <div class="uk-modal-dialog uk-modal-body">
-            <subreddit-selector></subreddit-selector>
-        </div>
-    </div>
+        <vk-modal :show.sync="show">
+          <subreddit-selector :allSubreddits="subreddits"></subreddit-selector>
+        </vk-modal>
   </div>
 </template>
 
 <script>
+import axios from 'axios';
 import SubredditSelector from './components/SubredditSelector.vue'
 import Landing from './pages/Landing'
 import Loading from 'vue-loading-overlay';
@@ -49,7 +48,9 @@ export default {
     return {
       signedin: false,
       messages: [],
-      showSpinner: false
+      showSpinner: false,
+      subreddits: [],
+      show: false
     }
   },
   created() {
@@ -68,6 +69,13 @@ export default {
   methods: {
     signout() {
       this.$auth.signout();
+    },
+    fetchSubreddits() {
+      this.show = true;
+      axios.get('api/subreddits')
+            .then((r) => {
+                this.subreddits = r.data;
+            });
     }
   }
 };
