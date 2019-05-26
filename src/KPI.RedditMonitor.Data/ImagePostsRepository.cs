@@ -96,17 +96,12 @@ namespace KPI.RedditMonitor.Data
         }
     },
     {
-        $addFields: {
-            diff: {
-                $min: '$allFeatures'
-            }
-        }
-    },
-    {
         $group: {
             _id: '$_id',
             intersection: {
-                $sum: '$diff'
+                $sum: { 
+                    $min: '$allFeatures' 
+                }
             },
             image: {
                 '$first': '$$ROOT'
