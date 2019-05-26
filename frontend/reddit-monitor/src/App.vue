@@ -71,10 +71,10 @@ export default {
       this.$auth.signout();
     },
     fetchSubreddits() {
-      this.show = true;
       axios.get('api/subreddits')
             .then((r) => {
                 this.subreddits = r.data;
+                this.show = true;
             });
     }
   }
