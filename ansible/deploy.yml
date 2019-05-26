@@ -3,6 +3,8 @@
   hosts: all
   pre_tasks:
   - raw: sudo apt-get -y install python-simplejson
+    register: install_py
+    failed_when: install_py.rc != 0
   remote_user: ubuntu
   gather_facts: false
 

@@ -3,6 +3,8 @@
 
 - name: package FrontEnd
   shell: chdir=../frontend/reddit-monitor npm run build
+  register: package_fe
+  failed_when: package_fe.rc != 0
 
 - name: Install dateutil and boto for s3 module
   shell: pip install python-dateutil boto3
