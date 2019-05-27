@@ -67,8 +67,6 @@ namespace KPI.RedditMonitor.Data
                 bsonSubreddits.Add(a);
             }
 
-            _log.LogInformation(bsonSubreddits.ToJson());
-
             var query = @"
 [{
         $match: {

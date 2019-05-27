@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
@@ -78,6 +79,11 @@ namespace KPI.RedditMonitor.Api
             services.AddSingleton<ImagePostsRepository>();
             services.AddSingleton<TopImageDbAdapter>();
             services.AddSingleton<SimilarityService>();
+
+            services.Configure<FormOptions>(options =>
+            {
+                options.ValueCountLimit = int.MaxValue;
+            });
 
             services.AddSwaggerGen(c =>
             {
