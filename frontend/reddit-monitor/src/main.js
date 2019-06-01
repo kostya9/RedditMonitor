@@ -3,7 +3,7 @@ import App from './App.vue'
 import VueRouter from 'vue-router';
 
 import Home from "./pages/Home.vue";
-import Admin from "./pages/Admin.vue";
+import TopImages from "./pages/TopImages.vue";
 
 import Vuikit from 'vuikit'
 import 'uikit';
@@ -26,7 +26,7 @@ Vue.use(VueVirtualScroller)
 
 const routes = [
   {path: '/', component: Home},
-  {path: '/admin', component: Admin},
+  {path: '/top-images', component: TopImages},
 ]
 
 const router = new VueRouter({

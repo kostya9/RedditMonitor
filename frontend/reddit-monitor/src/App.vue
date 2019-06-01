@@ -11,13 +11,13 @@
             <vk-navbar-item>
               <router-link to='/' class="uk-button uk-button-default">Search</router-link>
             </vk-navbar-item>
+            <vk-navbar-item>
+              <router-link to='/top-images' class="uk-button uk-button-default">Top Images</router-link>
+            </vk-navbar-item>
           </vk-navbar-nav>
           <vk-navbar-nav slot="right">
             <vk-navbar-item @click="fetchSubreddits()">
               <vk-button><vk-icons-cog></vk-icons-cog></vk-button>
-            </vk-navbar-item>
-            <vk-navbar-item>
-              <router-link to='/admin' class="uk-button uk-button-default">Admin</router-link>
             </vk-navbar-item>
             <vk-navbar-item>
               <vk-button-link href="#" class="uk-button uk-button-default" @click="signout()">Log out</vk-button-link>

@@ -25,7 +25,7 @@ import BaseUrl from './../BaseUrl.js'
 import ImageList from './../components/ImageList.vue'
 
 export default {
-    name: 'admin',
+    name: 'top-images',
     components: {
         ImageList
     },
