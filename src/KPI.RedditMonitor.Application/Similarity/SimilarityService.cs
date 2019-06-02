@@ -20,7 +20,7 @@ namespace KPI.RedditMonitor.Application.Similarity
             var imageFeatures = ImageFeatureFactory.Create(content);
 
             var features = imageFeatures.GetNormalizedBuckets();
-            var images = await _repository.Get(features, subreddits: subreddits);
+            var images = await _repository.FindSimilar(features, subreddits: subreddits);
             foreach (var topImageDto in images)
             {
                 topImageDto.EnsureUrlFormat();

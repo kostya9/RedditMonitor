@@ -56,7 +56,7 @@ namespace KPI.RedditMonitor.Data
         /// <param name="features"></param>
         /// <param name="top"></param>
         /// <returns></returns>
-        public async Task<List<TopImage>> Get(Dictionary<string, double[]> features, int top = 10, string[] subreddits = null)
+        public async Task<List<TopImage>> FindSimilar(Dictionary<string, double[]> features, int top = 10, string[] subreddits = null)
         {
             var featuresArray = features["red"].Concat(features["green"]).Concat(features["blue"]);
             var featuresBson = BsonArray.Create(featuresArray);

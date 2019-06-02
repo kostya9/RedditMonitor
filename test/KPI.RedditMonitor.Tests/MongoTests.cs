@@ -32,7 +32,7 @@ namespace KPI.RedditMonitor.Tests
         [Fact]
         public async Task GetTopTest()
         {
-            var top = await _repository.Get(new Dictionary<string, double[]>()
+            var top = await _repository.FindSimilar(new Dictionary<string, double[]>()
             {
                 {"red", new[] {0.2, 0.3, 0.2, 0.3}},
                 {"green", new[] {0.2, 0.3, 0.2, 0.3}},
