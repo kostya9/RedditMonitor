@@ -25,7 +25,7 @@ namespace KPI.RedditMonitor.Application.Similarity
             return histogram;
         }
 
-        public Dictionary<string, double[]> GetBuckets()
+        public Dictionary<string, double[]> GetNormalizedBuckets()
         {
             return _histograms.ToDictionary((kv) => kv.Key, kv => kv.Value.GetNormalizedBuckets());
         }

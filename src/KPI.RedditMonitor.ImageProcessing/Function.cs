@@ -77,7 +77,7 @@ namespace KPI.RedditMonitor.ImageProcessing
                     {
                         var features = ImageFeatureFactory.Create(content);
                         
-                        imagePost.FeatureBuckets = features.GetBuckets();
+                        imagePost.FeatureBuckets = features.GetNormalizedBuckets();
                     }
                 }
 

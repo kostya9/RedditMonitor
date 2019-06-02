@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Reddit;
+using Reddit.Controllers.EventArgs;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -22,7 +23,7 @@ namespace KPI.RedditMonitor.Collector.RedditPull.Collectors
             var api = new RedditAPI(_options.ClientId, _options.RefreshToken, _options.ClientSecret);
 
             var all = api.Subreddit("all");
-            all.Posts.NewUpdated += (s, args) =>
+            EventHandler<PostsUpdateEventArgs> newUpdatedHandler = (s, args) =>
             {
                 foreach(var added in args.Added)
                 {
@@ -31,10 +32,16 @@ namespace KPI.RedditMonitor.Collector.RedditPull.Collectors
                         t.Permalink.ToString(), t.CreatedUTC, added.NSFW, added.Subreddit));
                 }
             };
+            all.Posts.NewUpdated += newUpdatedHandler;
             all.Posts.MonitorNew();
 
-            TaskCompletionSource<bool> taskCompletionSource = new TaskCompletionSource<bool>();
-            cancellationToken.Register(() => taskCompletionSource.TrySetResult(true));
+            var taskCompletionSource = new TaskCompletionSource<bool>();
+            cancellationToken.Register(() => 
+            {
+                all.Posts.MonitorNew();
+                all.Posts.NewUpdated -= newUpdatedHandler;
+                taskCompletionSource.TrySetResult(true);
+            });
             return taskCompletionSource.Task;
         }
     }
