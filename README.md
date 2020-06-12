@@ -13,3 +13,11 @@ Folder with frontend src ( Search image page )
 ## src
 
 Folder with C# src (C# Reddit Image Collector + API)
+
+## Examples
+
+Top image duplicates
+![Top image duplicates](https://i.imgur.com/u64NYUY.png)
+
+Image search result
+![Image search result](https://i.imgur.com/ofuaJFk.png)
