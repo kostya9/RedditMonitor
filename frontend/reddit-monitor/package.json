@@ -10,7 +10,7 @@
   "dependencies": {
     "@vuikit/icons": "^0.8.1",
     "@vuikit/theme": "^0.8.1",
-    "axios": "^0.18.0",
+    "axios": "^0.21.1",
     "uikit": "^3.0.3",
     "vue": "^2.5.22",
     "vue-loading-overlay": "^3.2.0",
